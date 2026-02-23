@@ -41,7 +41,7 @@ Himalaya is a Rust-based CLI tool for managing emails from the terminal. This pl
 
 ```lua
 {
-  "yourusername/himalaya.nvim",
+  "knownasnaffy/himalaya.nvim",
   dependencies = {
     "MunifTanjim/nui.nvim",
   },
@@ -65,10 +65,10 @@ Open the email client:
 
 | Key | Action |
 |-----|--------|
-| `gq` | Close Himalaya |
+| `gq` | Close Himalaya (`:q` works too) |
 | `]f` | Next folder (supports count) |
 | `[f` | Previous folder (supports count) |
-| `gF` | Folder picker |
+| `gF` | Folder picker (native) |
 | `gr` | Reload current folder |
 
 ## Configuration
@@ -88,11 +88,13 @@ Or with lazy.nvim using `opts`:
 
 ```lua
 {
-  "yourusername/himalaya.nvim",
+  "knownasnaffy/himalaya.nvim",
   dependencies = { "MunifTanjim/nui.nvim" },
   opts = {
     icons_enabled = true, -- enable nerd font icons
   },
+  keys = {
+    { '<leader>oh', '<Cmd>Himalaya<CR>', desc = '[O]pen [H]imalaya' },
+  },
 }
 ```
-
