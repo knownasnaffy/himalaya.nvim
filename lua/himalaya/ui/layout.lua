@@ -21,6 +21,10 @@ function M.create()
         top_align = "center",
       },
     },
+    win_options = {
+      cursorline = true,
+    },
+    zindex = 40,
   })
 
   local main = Popup({
@@ -33,6 +37,10 @@ function M.create()
         top_align = "center",
       },
     },
+    win_options = {
+      cursorline = true,
+    },
+    zindex = 40,
   })
 
   local layout = Layout(
