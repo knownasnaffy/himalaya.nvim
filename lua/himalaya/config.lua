@@ -9,11 +9,11 @@ M.config = {
 	icons_enabled = false, -- use nerd font icons for folders
 	keymaps = {
 		listing = {
-			close = "gq",
-			next_folder = "]f",
-			previous_folder = "[f",
-			folder_picker = "gF",
-			reload = "gr",
+			["gq"] = "close",
+			["]f"] = "next_folder",
+			["[f"] = "previous_folder",
+			["gF"] = "folder_picker",
+			["gr"] = "reload",
 		},
 	},
 }

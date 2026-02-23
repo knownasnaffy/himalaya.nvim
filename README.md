@@ -75,6 +75,8 @@ Default keybindings (all customizable):
 
 ## Configuration
 
+Default configuration:
+
 ```lua
 require("himalaya").setup({
   sidebar = {
@@ -85,11 +87,11 @@ require("himalaya").setup({
   icons_enabled = false, -- use nerd font icons for folders
   keymaps = {
     listing = {
-      close = "gq",
-      next_folder = "]f",  -- can be string, list, or function
-      previous_folder = "[f",
-      folder_picker = "gF",
-      reload = "gr",
+      ["gq"] = "close",
+      ["]f"] = "next_folder",
+      ["[f"] = "previous_folder",
+      ["gF"] = "folder_picker",
+      ["gr"] = "reload",
     },
   },
 })
@@ -97,32 +99,49 @@ require("himalaya").setup({
 
 ### Custom Keymaps
 
+Keymap configuration is inspired by [neo-tree.nvim](https://github.com/nvim-neo-tree/neo-tree.nvim)'s flexible mapping system.
+
 You can customize keymaps in several ways:
 
 ```lua
 keymaps = {
   listing = {
-    -- Single key
-    close = "gq",
+    -- Simple action mapping
+    ["gq"] = "close",
     
     -- Multiple keys for same action
-    next_folder = { "]f", "<Tab>" },
-    previous_folder = { "[f", "<S-Tab>" },
+    ["]f"] = "next_folder",
+    ["<Tab>"] = "next_folder",
     
     -- Custom function
-    reload = {
+    ["<leader>r"] = function()
+      require("himalaya.folder").reload()
+      vim.notify("Reloaded!", vim.log.levels.INFO)
+    end,
+    
+    -- Custom function with description
+    ["<leader>R"] = {
       function()
         require("himalaya.folder").reload()
-        vim.notify("Custom reload!", vim.log.levels.INFO)
       end,
-      desc = "Custom reload with notification"
+      desc = "Reload with custom action"
     },
     
-    -- Disable a keymap
-    folder_picker = false,
+    -- Action with config (for future extensions)
+    ["gF"] = { "folder_picker", config = { picker = "telescope" } },
+    
+    -- Remove a default keymap (don't map it)
+    ["gr"] = nil,
   },
 }
 ```
+
+**Available actions:**
+- `close` - Close Himalaya window
+- `next_folder` - Navigate to next folder (supports count)
+- `previous_folder` - Navigate to previous folder (supports count)
+- `folder_picker` - Open folder picker (vim.ui.select)
+- `reload` - Reload current folder
 
 Or with lazy.nvim using `opts`:
 
