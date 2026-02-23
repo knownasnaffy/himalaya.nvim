@@ -12,7 +12,7 @@ function M.render(bufnr, envelopes)
   
   -- Get buffer width for subject calculation
   local bufwidth = vim.api.nvim_win_get_width(0)
-  local subject_width = bufwidth - 2 - 25 - max_date_width - 6 -- flag + from + date + spacing + parens
+  local subject_width = bufwidth - 2 - 25 - max_date_width - 7 -- flag + from + date + spacing + parens + extra space
   
   local lines = {}
   
@@ -35,18 +35,24 @@ function M.render(bufnr, envelopes)
     -- Subject - truncate based on display width
     local subject = env.subject or "(no subject)"
     local subject_display = subject
+    local truncated = false
     
     -- Truncate to fit display width
     while vim.fn.strdisplaywidth(subject_display) > subject_width do
       subject_display = subject_display:sub(1, #subject_display - 1)
+      truncated = true
     end
     
-    if vim.fn.strdisplaywidth(subject) > subject_width then
+    if truncated then
+      -- Remove extra chars to make room for "..."
+      while vim.fn.strdisplaywidth(subject_display .. "...") > subject_width do
+        subject_display = subject_display:sub(1, #subject_display - 1)
+      end
       subject_display = subject_display .. "..."
     end
     
-    -- Pad subject to fixed width
-    local padding = subject_width + 3 - vim.fn.strdisplaywidth(subject_display)
+    -- Pad subject to fixed width + 1 space
+    local padding = subject_width + 1 - vim.fn.strdisplaywidth(subject_display)
     line:append(subject_display .. string.rep(" ", padding), "HimalayaSubject")
     
     -- Date (relative)
