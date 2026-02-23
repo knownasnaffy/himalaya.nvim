@@ -64,6 +64,18 @@ function M.create()
 	local main_winid = vim.api.nvim_get_current_win()
 	local main_height = vim.api.nvim_win_get_height(main_winid)
 
+	-- Track window close to update state
+	vim.api.nvim_create_autocmd("WinClosed", {
+		pattern = tostring(sidebar.winid) .. "," .. tostring(main.winid),
+		callback = function()
+			state.is_open = false
+			state.layout = nil
+			state.sidebar = nil
+			state.main = nil
+		end,
+		once = true,
+	})
+
 	vim.notify("Loading Himalaya...", vim.log.levels.INFO)
 
 	-- Load folders
