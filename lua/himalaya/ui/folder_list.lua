@@ -32,8 +32,10 @@ local function render_tree(items, lines, depth, sidebar_width)
 		
 		-- Pad to full width if active folder
 		if hl_group == "HimalayaFolderActive" then
-			local padding = sidebar_width - vim.fn.strdisplaywidth(content)
-			content = content .. string.rep(" ", math.max(0, padding))
+			local padding = sidebar_width - vim.fn.strdisplaywidth(content) - 1
+			if padding > 0 then
+				content = content .. string.rep(" ", padding)
+			end
 		end
 		
 		line:append(content, hl_group)
