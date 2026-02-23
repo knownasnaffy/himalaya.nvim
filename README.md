@@ -22,3 +22,37 @@ Himalaya is a Rust-based CLI tool for managing emails from the terminal. This pl
 - Neovim >= 0.8
 - [Himalaya CLI](https://github.com/pimalaya/himalaya) installed and configured
 - [nui.nvim](https://github.com/MunifTanjim/nui.nvim)
+
+## Installation
+
+### lazy.nvim
+
+```lua
+{
+  "yourusername/himalaya.nvim",
+  dependencies = {
+    "MunifTanjim/nui.nvim",
+  },
+  opts = {},
+}
+```
+
+## Usage
+
+Open the email client:
+
+```vim
+:Himalaya
+```
+
+## Configuration
+
+```lua
+require("himalaya").setup({
+  sidebar = {
+    width = 30,
+  },
+  split_ratio = 0.4, -- email list takes 40% when split
+})
+```
+
