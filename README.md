@@ -17,6 +17,14 @@ Himalaya is a Rust-based CLI tool for managing emails from the terminal. This pl
 
 🚧 Under active development
 
+### ✅ Milestone 1: Basic Email Fetching (Completed)
+- Email list display with sender, subject, and relative date
+- Folder list in sidebar
+- Dynamic page sizing based on window height
+- Unicode support in subjects
+- Cursorline highlighting
+- Proper z-index for notifications
+
 ## Requirements
 
 - Neovim >= 0.8
