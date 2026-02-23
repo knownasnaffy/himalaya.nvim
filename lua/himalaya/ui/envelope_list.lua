@@ -7,17 +7,12 @@ function M.render(bufnr, envelopes)
   vim.bo[bufnr].modifiable = true
   vim.bo[bufnr].filetype = "himalaya-envelope-listing"
   
-  -- Calculate max date width
-  local max_date_width = 0
-  for _, env in ipairs(envelopes) do
-    local relative = date_utils.relative_date(env.date)
-    local date_str = "(" .. relative .. ")"
-    max_date_width = math.max(max_date_width, #date_str)
-  end
+  -- Use fixed max date width
+  local max_date_width = date_utils.max_date_width()
   
   -- Get buffer width for subject calculation
   local bufwidth = vim.api.nvim_win_get_width(0)
-  local subject_width = bufwidth - 2 - 25 - max_date_width - 4 -- flag + from + date + spacing
+  local subject_width = bufwidth - 2 - 25 - max_date_width - 6 -- flag + from + date + spacing + parens
   
   local lines = {}
   

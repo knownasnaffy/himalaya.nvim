@@ -22,14 +22,29 @@ function M.relative_date(date_str)
   
   local hours = math.floor(diff / 3600)
   local days = math.floor(diff / 86400)
+  local weeks = math.floor(days / 7)
+  local months = math.floor(days / 30)
+  local years = math.floor(days / 365)
   
-  if hours < 24 then
-    return string.format("%d hours ago", hours)
-  elseif days == 1 then
-    return "1 day ago"
+  if hours < 1 then
+    return "just now"
+  elseif hours < 24 then
+    return hours == 1 and "1 hour ago" or hours .. " hours ago"
+  elseif days < 14 then
+    return days == 1 and "1 day ago" or days .. " days ago"
+  elseif weeks < 4 then
+    return weeks == 1 and "1 week ago" or weeks .. " weeks ago"
+  elseif months < 12 then
+    return months == 1 and "1 month ago" or months .. " months ago"
   else
-    return string.format("%d days ago", days)
+    return years == 1 and "1 year ago" or years .. " years ago"
   end
+end
+
+-- Get maximum possible width for date display
+function M.max_date_width()
+  -- Longest possible: "11 months ago" = 13 chars
+  return 13
 end
 
 return M
