@@ -1,4 +1,5 @@
 local NuiLine = require("nui.line")
+local date_utils = require("himalaya.utils.date")
 
 local M = {}
 
@@ -22,11 +23,20 @@ function M.render(bufnr, envelopes)
     
     -- From
     local from = env.from.name or env.from.addr or "Unknown"
-    line:append(string.format("%-20s ", from:sub(1, 20)), "HimalayaFrom")
+    line:append(string.format("%-25s ", from:sub(1, 25)), "HimalayaFrom")
     
     -- Subject
     local subject = env.subject or "(no subject)"
-    line:append(subject, "HimalayaSubject")
+    local max_subject_len = 60
+    local subject_display = subject:sub(1, max_subject_len)
+    if #subject > max_subject_len then
+      subject_display = subject_display .. "..."
+    end
+    line:append(string.format("%-63s ", subject_display), "HimalayaSubject")
+    
+    -- Date (relative)
+    local relative = date_utils.relative_date(env.date)
+    line:append("(" .. relative .. ")", "HimalayaDate")
     
     table.insert(lines, line)
   end

@@ -48,8 +48,15 @@ function M.create()
     }, { dir = "row" })
   )
 
+  -- Mount first to get window dimensions
+  layout:mount()
+
   -- Set filetype for sidebar
   vim.bo[sidebar.bufnr].filetype = "himalaya-folder-listing"
+  
+  -- Get window height for main panel
+  local main_winid = vim.api.nvim_get_current_win()
+  local main_height = vim.api.nvim_win_get_height(main_winid)
   
   -- Load folders
   folder.list({}, function(err, data)
@@ -61,8 +68,8 @@ function M.create()
     folder_list.render(sidebar.bufnr, data)
   end)
   
-  -- Load envelopes
-  envelope.list({ page_size = 50 }, function(err, data)
+  -- Load envelopes with page_size matching window height
+  envelope.list({ page_size = main_height }, function(err, data)
     if err then
       vim.notify("Failed to load emails: " .. err, vim.log.levels.ERROR)
       return
