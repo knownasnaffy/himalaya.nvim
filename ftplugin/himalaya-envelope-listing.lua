@@ -18,7 +18,7 @@ vim.keymap.set("n", "]f", function()
 
 	-- Final navigation with reload and notification
 	folder_mod.next(false, false)
-end, { buffer = bufnr, desc = "Next folder" })
+end, { buffer = bufnr, desc = "Next folder", nowait = true })
 
 -- Previous folder (supports count)
 vim.keymap.set("n", "[f", function()
@@ -32,7 +32,7 @@ vim.keymap.set("n", "[f", function()
 
 	-- Final navigation with reload and notification
 	folder_mod.previous(false, false)
-end, { buffer = bufnr, desc = "Previous folder" })
+end, { buffer = bufnr, desc = "Previous folder", nowait = true })
 
 -- Folder picker
 vim.keymap.set("n", "gF", function()
