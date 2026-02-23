@@ -1,6 +1,7 @@
 local NuiLine = require("nui.line")
 local folder_utils = require("himalaya.utils.folder")
 local state = require("himalaya.state")
+local config = require("himalaya.config")
 
 local M = {}
 
@@ -18,8 +19,14 @@ local function render_tree(items, lines, depth)
       hl_group = "HimalayaFolderActive"
     end
     
-    -- Folder icon and name
-    line:append(indent .. "📁 " .. item.displayName, hl_group)
+    -- Folder icon
+    local icon = ""
+    if config.config.icons_enabled then
+      -- Use nerd font icons:  for folders with children,  for leaf folders
+      icon = (#item.children > 0) and " " or " "
+    end
+    
+    line:append(indent .. icon .. item.displayName, hl_group)
     table.insert(lines, line)
     
     -- Render children recursively
