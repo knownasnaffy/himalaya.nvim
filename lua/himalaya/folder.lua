@@ -4,6 +4,7 @@ local folder_cli = require("himalaya.cli.folder")
 local folder_list = require("himalaya.ui.folder_list")
 local envelope = require("himalaya.cli.envelope")
 local envelope_list = require("himalaya.ui.envelope_list")
+local layout = require("himalaya.ui.layout")
 
 local M = {}
 
@@ -16,6 +17,9 @@ local function reload_emails(silent)
   if not silent then
     vim.notify("Loading emails from " .. state.current_folder .. "...", vim.log.levels.INFO)
   end
+  
+  state.current_page = 1
+  layout.update_page_footer()
   
   local height = vim.api.nvim_win_get_height(vim.api.nvim_get_current_win())
   envelope.list({ folder = state.current_folder, page_size = height }, function(err, data)

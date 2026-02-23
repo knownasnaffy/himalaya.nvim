@@ -10,6 +10,12 @@ local folder_list = require("himalaya.ui.folder_list")
 
 local M = {}
 
+function M.update_page_footer()
+	if state.main_popup then
+		state.main_popup.border:set_text("bottom", " Page " .. state.current_page .. " ", "center")
+	end
+end
+
 function M.create()
 	local sidebar = Popup({
 		enter = false,
@@ -35,6 +41,8 @@ function M.create()
 			text = {
 				top = " Emails ",
 				top_align = "center",
+				bottom = " Page 1 ",
+				bottom_align = "center",
 			},
 		},
 		win_options = {
@@ -104,6 +112,7 @@ function M.create()
 	state.layout = layout
 	state.sidebar = sidebar.bufnr
 	state.main = main.bufnr
+	state.main_popup = main
 
 	return layout
 end
