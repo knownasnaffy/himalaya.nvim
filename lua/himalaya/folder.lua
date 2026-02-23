@@ -143,4 +143,11 @@ function M.picker()
   end)
 end
 
+-- Reload current folder
+function M.reload()
+  vim.notify("Reloading " .. state.current_folder .. "...", vim.log.levels.INFO)
+  reload_folders(true)
+  reload_emails(true)
+end
+
 return M
