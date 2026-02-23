@@ -32,13 +32,22 @@ function M.render(bufnr, envelopes)
     local from = env.from.name or env.from.addr or "Unknown"
     line:append(string.format("%-25s ", from:sub(1, 25)), "HimalayaFrom")
     
-    -- Subject
+    -- Subject - truncate based on display width
     local subject = env.subject or "(no subject)"
-    local subject_display = subject:sub(1, subject_width)
-    if #subject > subject_width then
+    local subject_display = subject
+    
+    -- Truncate to fit display width
+    while vim.fn.strdisplaywidth(subject_display) > subject_width do
+      subject_display = subject_display:sub(1, #subject_display - 1)
+    end
+    
+    if vim.fn.strdisplaywidth(subject) > subject_width then
       subject_display = subject_display .. "..."
     end
-    line:append(string.format("%-" .. (subject_width + 3) .. "s ", subject_display), "HimalayaSubject")
+    
+    -- Pad subject to fixed width
+    local padding = subject_width + 3 - vim.fn.strdisplaywidth(subject_display)
+    line:append(subject_display .. string.rep(" ", padding), "HimalayaSubject")
     
     -- Date (relative)
     local relative = date_utils.relative_date(env.date)
