@@ -26,7 +26,9 @@ local function render_tree(items, lines, depth)
       icon = (#item.children > 0) and " " or " "
     end
     
-    line:append(indent .. icon .. item.displayName, hl_group)
+    -- Add space after icon if present
+    local display = icon ~= "" and (icon .. " " .. item.displayName) or item.displayName
+    line:append(indent .. display, hl_group)
     table.insert(lines, line)
     
     -- Render children recursively
