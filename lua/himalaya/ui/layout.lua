@@ -64,26 +64,6 @@ function M.create()
 	local main_winid = vim.api.nvim_get_current_win()
 	local main_height = vim.api.nvim_win_get_height(main_winid)
 
-	-- Auto-close on focus loss
-	local function check_focus()
-		local current_buf = vim.api.nvim_get_current_buf()
-		local ft = vim.bo[current_buf].filetype
-
-		-- Don't close if in a picker/prompt
-		if vim.fn.mode() == "c" or vim.bo[current_buf].buftype == "prompt" then
-			return
-		end
-
-		if not ft:match("^himalaya%-") then
-			require("himalaya").close()
-		end
-	end
-
-	-- Set up autocmd for focus change
-	vim.api.nvim_create_autocmd("WinEnter", {
-		callback = check_focus,
-	})
-
 	-- Load folders
 	folder.list({}, function(err, data)
 		if err then
@@ -105,8 +85,8 @@ function M.create()
 	end)
 
 	state.layout = layout
-	state.sidebar = sidebar
-	state.main = main
+	state.sidebar = sidebar.bufnr
+	state.main = main.bufnr
 
 	return layout
 end
