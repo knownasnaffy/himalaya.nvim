@@ -6,46 +6,41 @@ local config = require("himalaya.config")
 local M = {}
 
 -- Recursively render folder tree
-local function render_tree(items, lines, depth, sidebar_width)
+local function render_tree(items, lines, depth, active_line)
 	depth = depth or 0
+	active_line = active_line or { line = 0 }
 
 	for _, item in ipairs(items) do
 		local line = NuiLine()
 		local indent = string.rep("  ", depth)
 
-		-- Highlight active folder
-		local hl_group = "HimalayaFolder"
+		-- Track line number for active folder
+		table.insert(lines, line)
+		local current_line = #lines
+		
 		if item.name and item.name == state.current_folder then
-			hl_group = "HimalayaFolderActive"
+			active_line.line = current_line
 		end
 
 		-- Folder icon
 		local icon = ""
 		if config.config.icons_enabled then
-			-- Use nerd font icons:  for folders with children,  for leaf folders
-			icon = (#item.children > 0) and "" or ""
+			icon = (#item.children > 0) and "" or ""
 		end
 
 		-- Add space after icon if present, and horizontal padding
 		local display = icon ~= "" and (icon .. " " .. item.displayName) or item.displayName
 		local content = " " .. indent .. display
 		
-		-- Pad to full width if active folder
-		if hl_group == "HimalayaFolderActive" then
-			local padding = sidebar_width - vim.fn.strdisplaywidth(content) - 1
-			if padding > 0 then
-				content = content .. string.rep(" ", padding)
-			end
-		end
-		
-		line:append(content, hl_group)
-		table.insert(lines, line)
+		line:append(content, "HimalayaFolder")
 
 		-- Render children recursively
 		if #item.children > 0 then
-			render_tree(item.children, lines, depth + 1, sidebar_width)
+			render_tree(item.children, lines, depth + 1, active_line)
 		end
 	end
+	
+	return active_line.line
 end
 
 function M.render(bufnr, folders)
@@ -61,14 +56,20 @@ function M.render(bufnr, folders)
 	-- Clear buffer first
 	vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, {})
 
-	-- Get sidebar width
-	local sidebar_width = config.config.sidebar.width
-
 	local lines = {}
-	render_tree(tree, lines, 0, sidebar_width)
+	local active_line = { line = 0 }
+	render_tree(tree, lines, 0, active_line)
 
 	for i, line in ipairs(lines) do
 		line:render(bufnr, -1, i)
+	end
+
+	-- Position cursor on active folder line
+	if active_line.line > 0 then
+		local wins = vim.fn.win_findbuf(bufnr)
+		for _, win in ipairs(wins) do
+			vim.api.nvim_win_set_cursor(win, { active_line.line, 0 })
+		end
 	end
 
 	vim.bo[bufnr].modifiable = false

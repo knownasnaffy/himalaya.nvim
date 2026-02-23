@@ -21,6 +21,9 @@ function M.create()
 				top_align = "center",
 			},
 		},
+		win_options = {
+			cursorline = true,
+		},
 		zindex = 49,
 	})
 
