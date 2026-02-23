@@ -1,7 +1,9 @@
 local M = {}
 
-M.current_account = nil
-M.current_folder = nil
+M.current_account = ""
+M.current_folder = "INBOX"
 M.layout = nil
+M.sidebar = nil
+M.main = nil
 
 return M

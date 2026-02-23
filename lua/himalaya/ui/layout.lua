@@ -2,6 +2,8 @@ local Layout = require("nui.layout")
 local Popup = require("nui.popup")
 local state = require("himalaya.state")
 local config = require("himalaya.config")
+local envelope = require("himalaya.cli.envelope")
+local envelope_list = require("himalaya.ui.envelope_list")
 
 local M = {}
 
@@ -44,7 +46,23 @@ function M.create()
     }, { dir = "row" })
   )
 
+  -- Set filetype for sidebar
+  vim.bo[sidebar.bufnr].filetype = "himalaya-folder-listing"
+  
+  -- Load envelopes
+  envelope.list({ page_size = 50 }, function(err, data)
+    if err then
+      vim.notify("Failed to load emails: " .. err, vim.log.levels.ERROR)
+      return
+    end
+    
+    envelope_list.render(main.bufnr, data)
+  end)
+
   state.layout = layout
+  state.sidebar = sidebar
+  state.main = main
+  
   return layout
 end
 
