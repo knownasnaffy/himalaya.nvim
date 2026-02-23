@@ -6,14 +6,20 @@ vim.keymap.set("n", "gq", function()
   require("himalaya").close()
 end, { buffer = bufnr, desc = "Close Himalaya" })
 
--- Next folder
+-- Next folder (supports count)
 vim.keymap.set("n", "]f", function()
-  require("himalaya.folder").next()
+  local count = vim.v.count1
+  for _ = 1, count do
+    require("himalaya.folder").next()
+  end
 end, { buffer = bufnr, desc = "Next folder" })
 
--- Previous folder
+-- Previous folder (supports count)
 vim.keymap.set("n", "[f", function()
-  require("himalaya.folder").previous()
+  local count = vim.v.count1
+  for _ = 1, count do
+    require("himalaya.folder").previous()
+  end
 end, { buffer = bufnr, desc = "Previous folder" })
 
 -- Folder picker

@@ -25,6 +25,10 @@ local function reload_emails(silent)
     end
     
     envelope_list.render(state.main, data)
+    
+    if not silent then
+      vim.notify("Reloaded " .. state.current_folder, vim.log.levels.INFO)
+    end
   end)
 end
 
