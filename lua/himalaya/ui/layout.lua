@@ -17,22 +17,26 @@ function M.show_spinner(message)
 	if not state.sidebar_popup then
 		return
 	end
-	
+
 	-- Stop existing timer
 	if state.spinner_timer then
 		state.spinner_timer:stop()
 	end
-	
+
 	-- Start spinner animation
 	spinner_index = 1
 	state.spinner_timer = vim.loop.new_timer()
-	state.spinner_timer:start(0, 80, vim.schedule_wrap(function()
-		if state.sidebar_popup then
-			local frame = spinner_frames[spinner_index]
-			state.sidebar_popup.border:set_text("bottom", " " .. frame .. " " .. message .. " ", "center")
-			spinner_index = (spinner_index % #spinner_frames) + 1
-		end
-	end))
+	state.spinner_timer:start(
+		0,
+		80,
+		vim.schedule_wrap(function()
+			if state.sidebar_popup then
+				local frame = spinner_frames[spinner_index]
+				state.sidebar_popup.border:set_text("bottom", " " .. frame .. " " .. message .. " ", "center")
+				spinner_index = (spinner_index % #spinner_frames) + 1
+			end
+		end)
+	)
 end
 
 function M.hide_spinner()
@@ -40,7 +44,7 @@ function M.hide_spinner()
 		state.spinner_timer:stop()
 		state.spinner_timer = nil
 	end
-	
+
 	if state.sidebar_popup then
 		state.sidebar_popup.border:set_text("bottom", "", "center")
 	end

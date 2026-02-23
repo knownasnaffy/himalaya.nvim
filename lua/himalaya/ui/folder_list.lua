@@ -17,7 +17,7 @@ local function render_tree(items, lines, depth, active_line)
 		-- Track line number for active folder
 		table.insert(lines, line)
 		local current_line = #lines
-		
+
 		if item.name and item.name == state.current_folder then
 			active_line.line = current_line
 		end
@@ -31,7 +31,7 @@ local function render_tree(items, lines, depth, active_line)
 		-- Add space after icon if present, and horizontal padding
 		local display = icon ~= "" and (icon .. " " .. item.displayName) or item.displayName
 		local content = " " .. indent .. display
-		
+
 		line:append(content, "HimalayaFolder")
 
 		-- Render children recursively
@@ -39,7 +39,7 @@ local function render_tree(items, lines, depth, active_line)
 			render_tree(item.children, lines, depth + 1, active_line)
 		end
 	end
-	
+
 	return active_line.line
 end
 

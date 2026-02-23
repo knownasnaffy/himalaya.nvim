@@ -1,7 +1,7 @@
 return {
-  "yourusername/himalaya.nvim",
-  dependencies = {
-    "MunifTanjim/nui.nvim",
-  },
-  opts = {},
+	"yourusername/himalaya.nvim",
+	dependencies = {
+		"MunifTanjim/nui.nvim",
+	},
+	opts = {},
 }
