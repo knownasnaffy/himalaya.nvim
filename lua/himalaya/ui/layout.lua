@@ -1,5 +1,6 @@
 local Layout = require("nui.layout")
 local Popup = require("nui.popup")
+local event = require("nui.utils.autocmd").event
 local state = require("himalaya.state")
 local config = require("himalaya.config")
 local envelope = require("himalaya.cli.envelope")
@@ -57,6 +58,21 @@ function M.create()
   -- Get window height for main panel
   local main_winid = vim.api.nvim_get_current_win()
   local main_height = vim.api.nvim_win_get_height(main_winid)
+  
+  -- Auto-close on focus loss
+  local function check_focus()
+    local current_buf = vim.api.nvim_get_current_buf()
+    local ft = vim.bo[current_buf].filetype
+    
+    if not ft:match("^himalaya%-") then
+      require("himalaya").close()
+    end
+  end
+  
+  -- Set up autocmd for focus change
+  vim.api.nvim_create_autocmd("WinEnter", {
+    callback = check_focus,
+  })
   
   -- Load folders
   folder.list({}, function(err, data)
