@@ -66,8 +66,8 @@ Open the email client:
 | Key | Action |
 |-----|--------|
 | `gq` | Close Himalaya (`:q` works too) |
-| `]f` | Next folder (supports count) |
-| `[f` | Previous folder (supports count) |
+| `<Tab>` | Next folder (supports count) |
+| `<S-Tab>` | Previous folder (supports count) |
 | `gF` | Folder picker (native) |
 | `gr` | Reload current folder |
 

@@ -7,7 +7,7 @@ vim.keymap.set("n", "gq", function()
 end, { buffer = bufnr, desc = "Close Himalaya" })
 
 -- Next folder (supports count)
-vim.keymap.set("n", "]f", function()
+vim.keymap.set("n", "<Tab>", function()
 	local count = vim.v.count1
 	local folder_mod = require("himalaya.folder")
 
@@ -18,10 +18,10 @@ vim.keymap.set("n", "]f", function()
 
 	-- Final navigation with reload and notification
 	folder_mod.next(false, false)
-end, { buffer = bufnr, desc = "Next folder", nowait = true })
+end, { buffer = bufnr, desc = "Next folder" })
 
 -- Previous folder (supports count)
-vim.keymap.set("n", "[f", function()
+vim.keymap.set("n", "<S-Tab>", function()
 	local count = vim.v.count1
 	local folder_mod = require("himalaya.folder")
 
@@ -32,7 +32,7 @@ vim.keymap.set("n", "[f", function()
 
 	-- Final navigation with reload and notification
 	folder_mod.previous(false, false)
-end, { buffer = bufnr, desc = "Previous folder", nowait = true })
+end, { buffer = bufnr, desc = "Previous folder" })
 
 -- Folder picker
 vim.keymap.set("n", "gF", function()
