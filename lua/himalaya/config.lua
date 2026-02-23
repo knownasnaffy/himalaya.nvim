@@ -7,6 +7,15 @@ M.config = {
 	split_ratio = 0.4, -- email list takes 40% when split
 	wrap_folder_navigation = true, -- wrap to first/last when navigating folders
 	icons_enabled = false, -- use nerd font icons for folders
+	keymaps = {
+		listing = {
+			close = "gq",
+			next_folder = "]f",
+			previous_folder = "[f",
+			folder_picker = "gF",
+			reload = "gr",
+		},
+	},
 }
 
 function M.setup(opts)

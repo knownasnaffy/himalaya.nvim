@@ -63,11 +63,13 @@ Open the email client:
 
 ### Keybindings
 
+Default keybindings (all customizable):
+
 | Key | Action |
 |-----|--------|
 | `gq` | Close Himalaya (`:q` works too) |
-| `<Tab>` | Next folder (supports count) |
-| `<S-Tab>` | Previous folder (supports count) |
+| `]f` | Next folder (supports count) |
+| `[f` | Previous folder (supports count) |
 | `gF` | Folder picker (native) |
 | `gr` | Reload current folder |
 
@@ -81,7 +83,45 @@ require("himalaya").setup({
   split_ratio = 0.4, -- email list takes 40% when split
   wrap_folder_navigation = true, -- wrap to first/last when navigating
   icons_enabled = false, -- use nerd font icons for folders
+  keymaps = {
+    listing = {
+      close = "gq",
+      next_folder = "]f",  -- can be string, list, or function
+      previous_folder = "[f",
+      folder_picker = "gF",
+      reload = "gr",
+    },
+  },
 })
+```
+
+### Custom Keymaps
+
+You can customize keymaps in several ways:
+
+```lua
+keymaps = {
+  listing = {
+    -- Single key
+    close = "gq",
+    
+    -- Multiple keys for same action
+    next_folder = { "]f", "<Tab>" },
+    previous_folder = { "[f", "<S-Tab>" },
+    
+    -- Custom function
+    reload = {
+      function()
+        require("himalaya.folder").reload()
+        vim.notify("Custom reload!", vim.log.levels.INFO)
+      end,
+      desc = "Custom reload with notification"
+    },
+    
+    -- Disable a keymap
+    folder_picker = false,
+  },
+}
 ```
 
 Or with lazy.nvim using `opts`:
