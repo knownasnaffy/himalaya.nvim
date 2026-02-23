@@ -8,9 +8,13 @@ local envelope_list = require("himalaya.ui.envelope_list")
 local M = {}
 
 -- Reload emails for current folder
-local function reload_emails()
+local function reload_emails(silent)
   if not state.main then
     return
+  end
+  
+  if not silent then
+    vim.notify("Loading emails from " .. state.current_folder .. "...", vim.log.levels.INFO)
   end
   
   local height = vim.api.nvim_win_get_height(vim.api.nvim_get_current_win())
@@ -25,14 +29,16 @@ local function reload_emails()
 end
 
 -- Reload folder list to update highlighting
-local function reload_folders()
+local function reload_folders(silent)
   if not state.sidebar then
     return
   end
   
   folder_cli.list({}, function(err, data)
     if err then
-      vim.notify("Failed to reload folders: " .. err, vim.log.levels.ERROR)
+      if not silent then
+        vim.notify("Failed to reload folders: " .. err, vim.log.levels.ERROR)
+      end
       return
     end
     
@@ -48,8 +54,9 @@ function M.switch_to(folder_name)
   end
   
   state.current_folder = folder_name
-  reload_folders()
-  reload_emails()
+  vim.notify("Switching to " .. folder_name .. "...", vim.log.levels.INFO)
+  reload_folders(true) -- Silent folder reload
+  reload_emails(true) -- Silent email reload (notification already shown)
 end
 
 -- Navigate to next folder
@@ -81,8 +88,9 @@ function M.next()
     state.current_folder = state.folder_list[next_idx]
   end
   
-  reload_folders()
-  reload_emails()
+  vim.notify("Switching to " .. state.current_folder .. "...", vim.log.levels.INFO)
+  reload_folders(true)
+  reload_emails(true)
 end
 
 -- Navigate to previous folder
@@ -114,8 +122,9 @@ function M.previous()
     state.current_folder = state.folder_list[prev_idx]
   end
   
-  reload_folders()
-  reload_emails()
+  vim.notify("Switching to " .. state.current_folder .. "...", vim.log.levels.INFO)
+  reload_folders(true)
+  reload_emails(true)
 end
 
 -- Show folder picker

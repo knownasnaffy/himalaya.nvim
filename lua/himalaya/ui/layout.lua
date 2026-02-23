@@ -64,6 +64,8 @@ function M.create()
 	local main_winid = vim.api.nvim_get_current_win()
 	local main_height = vim.api.nvim_win_get_height(main_winid)
 
+	vim.notify("Loading Himalaya...", vim.log.levels.INFO)
+
 	-- Load folders
 	folder.list({}, function(err, data)
 		if err then
