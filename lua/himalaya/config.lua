@@ -5,6 +5,7 @@ M.config = {
     width = 30,
   },
   split_ratio = 0.4, -- email list takes 40% when split
+  wrap_folder_navigation = true, -- wrap to first/last when navigating folders
 }
 
 function M.setup(opts)

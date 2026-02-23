@@ -1,5 +1,6 @@
 local NuiLine = require("nui.line")
 local folder_utils = require("himalaya.utils.folder")
+local state = require("himalaya.state")
 
 local M = {}
 
@@ -11,8 +12,14 @@ local function render_tree(items, lines, depth)
     local line = NuiLine()
     local indent = string.rep("  ", depth)
     
+    -- Highlight active folder
+    local hl_group = "HimalayaFolder"
+    if item.name and item.name == state.current_folder then
+      hl_group = "HimalayaFolderActive"
+    end
+    
     -- Folder icon and name
-    line:append(indent .. "📁 " .. item.displayName, "HimalayaFolder")
+    line:append(indent .. "📁 " .. item.displayName, hl_group)
     table.insert(lines, line)
     
     -- Render children recursively
@@ -28,6 +35,9 @@ function M.render(bufnr, folders)
   
   -- Parse folders into tree structure
   local tree = folder_utils.parse_folders(folders)
+  
+  -- Store flat list of accessible folders in state
+  state.folder_list = folder_utils.get_accessible_folders(tree)
   
   local lines = {}
   render_tree(tree, lines)

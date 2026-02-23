@@ -13,16 +13,13 @@ local M = {}
 function M.create()
 	local sidebar = Popup({
 		enter = false,
-		focusable = true,
+		focusable = false, -- Disable focus, managed by commands
 		border = {
 			style = "rounded",
 			text = {
 				top = " Folders ",
 				top_align = "center",
 			},
-		},
-		win_options = {
-			cursorline = true,
 		},
 		zindex = 49,
 	})

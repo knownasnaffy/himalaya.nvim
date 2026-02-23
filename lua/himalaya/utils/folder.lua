@@ -57,4 +57,23 @@ function M.parse_folders(folders)
   return root
 end
 
+-- Get flat list of accessible folders (ones with name field)
+function M.get_accessible_folders(tree)
+  local result = {}
+  
+  local function traverse(items)
+    for _, item in ipairs(items) do
+      if item.name then
+        table.insert(result, item.name)
+      end
+      if #item.children > 0 then
+        traverse(item.children)
+      end
+    end
+  end
+  
+  traverse(tree)
+  return result
+end
+
 return M
