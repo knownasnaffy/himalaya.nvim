@@ -1,30 +1,36 @@
 local NuiLine = require("nui.line")
+local folder_utils = require("himalaya.utils.folder")
 
 local M = {}
+
+-- Recursively render folder tree
+local function render_tree(items, lines, depth)
+  depth = depth or 0
+  
+  for _, item in ipairs(items) do
+    local line = NuiLine()
+    local indent = string.rep("  ", depth)
+    
+    -- Folder icon and name
+    line:append(indent .. "📁 " .. item.displayName, "HimalayaFolder")
+    table.insert(lines, line)
+    
+    -- Render children recursively
+    if #item.children > 0 then
+      render_tree(item.children, lines, depth + 1)
+    end
+  end
+end
 
 function M.render(bufnr, folders)
   vim.bo[bufnr].modifiable = true
   vim.bo[bufnr].filetype = "himalaya-folder-listing"
   
-  local lines = {}
+  -- Parse folders into tree structure
+  local tree = folder_utils.parse_folders(folders)
   
-  for _, folder in ipairs(folders) do
-    local line = NuiLine()
-    
-    -- Simple folder display (no tree for now)
-    local name = folder.name
-    
-    -- Indent subfolders
-    local indent = ""
-    local depth = select(2, name:gsub("/", ""))
-    if depth > 0 then
-      indent = string.rep("  ", depth)
-      name = name:match("([^/]+)$") or name
-    end
-    
-    line:append(indent .. "📁 " .. name, "HimalayaFolder")
-    table.insert(lines, line)
-  end
+  local lines = {}
+  render_tree(tree, lines)
   
   for i, line in ipairs(lines) do
     line:render(bufnr, -1, i)
