@@ -7,6 +7,8 @@ M.layout = nil
 M.sidebar = nil -- Buffer number
 M.main = nil -- Buffer number
 M.main_popup = nil -- Popup object for updating border text
+M.sidebar_popup = nil -- Popup object for spinner
+M.spinner_timer = nil -- Timer for spinner animation
 M.is_open = false
 M.folder_list = {} -- Flat list of accessible folders (with name field)
 

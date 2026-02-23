@@ -10,6 +10,42 @@ local folder_list = require("himalaya.ui.folder_list")
 
 local M = {}
 
+local spinner_frames = { "⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏" }
+local spinner_index = 1
+
+function M.show_spinner(message)
+	if not state.sidebar_popup then
+		return
+	end
+	
+	-- Stop existing timer
+	if state.spinner_timer then
+		state.spinner_timer:stop()
+	end
+	
+	-- Start spinner animation
+	spinner_index = 1
+	state.spinner_timer = vim.loop.new_timer()
+	state.spinner_timer:start(0, 80, vim.schedule_wrap(function()
+		if state.sidebar_popup then
+			local frame = spinner_frames[spinner_index]
+			state.sidebar_popup.border:set_text("bottom", " " .. frame .. " " .. message .. " ", "center")
+			spinner_index = (spinner_index % #spinner_frames) + 1
+		end
+	end))
+end
+
+function M.hide_spinner()
+	if state.spinner_timer then
+		state.spinner_timer:stop()
+		state.spinner_timer = nil
+	end
+	
+	if state.sidebar_popup then
+		state.sidebar_popup.border:set_text("bottom", "", "center")
+	end
+end
+
 function M.update_page_footer()
 	if state.main_popup then
 		state.main_popup.border:set_text("bottom", " Page " .. state.current_page .. " ", "center")
@@ -79,6 +115,9 @@ function M.create()
 	vim.api.nvim_create_autocmd("WinClosed", {
 		pattern = tostring(sidebar.winid) .. "," .. tostring(main.winid),
 		callback = function()
+			if state.spinner_timer then
+				state.spinner_timer:stop()
+			end
 			state.is_open = false
 			state.layout = nil
 			state.sidebar = nil
@@ -87,11 +126,18 @@ function M.create()
 		once = true,
 	})
 
-	vim.notify("Loading Himalaya...", vim.log.levels.INFO)
+	state.layout = layout
+	state.sidebar = sidebar.bufnr
+	state.sidebar_popup = sidebar
+	state.main = main.bufnr
+	state.main_popup = main
+
+	M.show_spinner("Loading")
 
 	-- Load folders
 	folder.list({}, function(err, data)
 		if err then
+			M.hide_spinner()
 			vim.notify("Failed to load folders: " .. err, vim.log.levels.ERROR)
 			return
 		end
@@ -102,17 +148,14 @@ function M.create()
 	-- Load envelopes with page_size matching window height
 	envelope.list({ page_size = main_height }, function(err, data)
 		if err then
+			M.hide_spinner()
 			vim.notify("Failed to load emails: " .. err, vim.log.levels.ERROR)
 			return
 		end
 
 		envelope_list.render(main.bufnr, data)
+		M.hide_spinner()
 	end)
-
-	state.layout = layout
-	state.sidebar = sidebar.bufnr
-	state.main = main.bufnr
-	state.main_popup = main
 
 	return layout
 end

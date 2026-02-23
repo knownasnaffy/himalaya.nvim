@@ -15,7 +15,7 @@ local function reload_emails(silent)
   end
   
   if not silent then
-    vim.notify("Loading emails from " .. state.current_folder .. "...", vim.log.levels.INFO)
+    layout.show_spinner("Loading emails")
   end
   
   state.current_page = 1
@@ -24,15 +24,13 @@ local function reload_emails(silent)
   local height = vim.api.nvim_win_get_height(vim.api.nvim_get_current_win())
   envelope.list({ folder = state.current_folder, page_size = height }, function(err, data)
     if err then
+      layout.hide_spinner()
       vim.notify("Failed to load emails: " .. err, vim.log.levels.ERROR)
       return
     end
     
     envelope_list.render(state.main, data)
-    
-    if not silent then
-      vim.notify("Reloaded " .. state.current_folder, vim.log.levels.INFO)
-    end
+    layout.hide_spinner()
   end)
 end
 
@@ -62,9 +60,9 @@ function M.switch_to(folder_name)
   end
   
   state.current_folder = folder_name
-  vim.notify("Switching to " .. folder_name .. "...", vim.log.levels.INFO)
+  layout.show_spinner("Switching folder")
   reload_folders(true) -- Silent folder reload
-  reload_emails(true) -- Silent email reload (notification already shown)
+  reload_emails(true) -- Silent email reload (spinner already shown)
 end
 
 -- Navigate to next folder
@@ -100,7 +98,7 @@ function M.next(silent, skip_reload)
   
   if not skip_reload then
     if not silent then
-      vim.notify("Switching to " .. state.current_folder .. "...", vim.log.levels.INFO)
+      layout.show_spinner("Switching folder")
     end
     reload_folders(true)
     reload_emails(true)
@@ -140,7 +138,7 @@ function M.previous(silent, skip_reload)
   
   if not skip_reload then
     if not silent then
-      vim.notify("Switching to " .. state.current_folder .. "...", vim.log.levels.INFO)
+      layout.show_spinner("Switching folder")
     end
     reload_folders(true)
     reload_emails(true)
@@ -165,11 +163,11 @@ end
 
 -- Reload current folder
 function M.reload()
-  vim.notify("Reloading " .. state.current_folder .. "...", vim.log.levels.INFO)
+  layout.show_spinner("Reloading")
   
   reload_folders(true)
   
-  -- Reload emails with success notification
+  -- Reload emails
   if not state.main then
     return
   end
@@ -177,12 +175,13 @@ function M.reload()
   local height = vim.api.nvim_win_get_height(vim.api.nvim_get_current_win())
   envelope.list({ folder = state.current_folder, page_size = height }, function(err, data)
     if err then
+      layout.hide_spinner()
       vim.notify("Failed to load emails: " .. err, vim.log.levels.ERROR)
       return
     end
     
     envelope_list.render(state.main, data)
-    vim.notify("Reloaded " .. state.current_folder, vim.log.levels.INFO)
+    layout.hide_spinner()
   end)
 end
 
