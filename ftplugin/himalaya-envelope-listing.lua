@@ -11,10 +11,13 @@ vim.keymap.set("n", "]f", function()
   local count = vim.v.count1
   local folder_mod = require("himalaya.folder")
   
-  -- Navigate silently for all but the last
-  for i = 1, count do
-    folder_mod.next(i < count) -- silent if not last
+  -- Navigate without reload for all but the last
+  for i = 1, count - 1 do
+    folder_mod.next(true, true) -- silent, skip_reload
   end
+  
+  -- Final navigation with reload and notification
+  folder_mod.next(false, false)
 end, { buffer = bufnr, desc = "Next folder" })
 
 -- Previous folder (supports count)
@@ -22,10 +25,13 @@ vim.keymap.set("n", "[f", function()
   local count = vim.v.count1
   local folder_mod = require("himalaya.folder")
   
-  -- Navigate silently for all but the last
-  for i = 1, count do
-    folder_mod.previous(i < count) -- silent if not last
+  -- Navigate without reload for all but the last
+  for i = 1, count - 1 do
+    folder_mod.previous(true, true) -- silent, skip_reload
   end
+  
+  -- Final navigation with reload and notification
+  folder_mod.previous(false, false)
 end, { buffer = bufnr, desc = "Previous folder" })
 
 -- Folder picker
