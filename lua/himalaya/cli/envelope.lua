@@ -8,12 +8,12 @@ function M.list(opts, callback)
   
   if opts.folder then
     table.insert(args, "--folder")
-    table.insert(args, opts.folder)
+    table.insert(args, vim.fn.shellescape(opts.folder))
   end
   
   if opts.account and opts.account ~= "" then
     table.insert(args, "--account")
-    table.insert(args, opts.account)
+    table.insert(args, vim.fn.shellescape(opts.account))
   end
   
   if opts.page_size then

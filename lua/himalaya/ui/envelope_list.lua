@@ -14,6 +14,9 @@ function M.render(bufnr, envelopes)
   local bufwidth = vim.api.nvim_win_get_width(0)
   local subject_width = bufwidth - 2 - 25 - max_date_width - 7 -- flag + from + date + spacing + parens + extra space
   
+  -- Clear buffer first
+  vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, {})
+  
   local lines = {}
   
   for _, env in ipairs(envelopes) do

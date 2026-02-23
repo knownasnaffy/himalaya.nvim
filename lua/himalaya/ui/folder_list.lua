@@ -39,6 +39,9 @@ function M.render(bufnr, folders)
   -- Store flat list of accessible folders in state
   state.folder_list = folder_utils.get_accessible_folders(tree)
   
+  -- Clear buffer first
+  vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, {})
+  
   local lines = {}
   render_tree(tree, lines)
   

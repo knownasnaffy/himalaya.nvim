@@ -69,6 +69,11 @@ function M.create()
 		local current_buf = vim.api.nvim_get_current_buf()
 		local ft = vim.bo[current_buf].filetype
 
+		-- Don't close if in a picker/prompt
+		if vim.fn.mode() == "c" or vim.bo[current_buf].buftype == "prompt" then
+			return
+		end
+
 		if not ft:match("^himalaya%-") then
 			require("himalaya").close()
 		end
