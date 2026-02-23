@@ -40,12 +40,33 @@ function M.run_json(args, callback)
       return
     end
     
+    -- Handle empty output
+    if not output or output == "" then
+      callback(nil, {})
+      return
+    end
+    
     local ok, data = pcall(vim.json.decode, output)
     if not ok then
       callback("Failed to parse JSON: " .. data, nil)
       return
     end
     
+    -- Convert vim.NIL to nil recursively
+    local function clean_nil(obj)
+      if type(obj) == "table" then
+        for k, v in pairs(obj) do
+          if v == vim.NIL then
+            obj[k] = nil
+          elseif type(v) == "table" then
+            clean_nil(v)
+          end
+        end
+      end
+      return obj
+    end
+    
+    data = clean_nil(data)
     callback(nil, data)
   end)
 end

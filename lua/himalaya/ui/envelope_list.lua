@@ -7,6 +7,14 @@ function M.render(bufnr, envelopes)
   vim.bo[bufnr].modifiable = true
   vim.bo[bufnr].filetype = "himalaya-envelope-listing"
   
+  -- Handle empty envelope list
+  if not envelopes or #envelopes == 0 then
+    vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, { "No emails in this folder" })
+    vim.bo[bufnr].modifiable = false
+    vim.bo[bufnr].modified = false
+    return
+  end
+  
   -- Use fixed max date width
   local max_date_width = date_utils.max_date_width()
   
@@ -31,9 +39,9 @@ function M.render(bufnr, envelopes)
     end
     line:append(flag .. " ", "HimalayaFlag")
     
-    -- From - handle nil/null values
+    -- From - handle nil values safely
     local from = "Unknown"
-    if env.from and type(env.from) == "table" then
+    if env.from then
       from = env.from.name or env.from.addr or "Unknown"
     end
     line:append(string.format("%-25s ", from:sub(1, 25)), "HimalayaFrom")
