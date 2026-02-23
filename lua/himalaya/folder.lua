@@ -162,8 +162,24 @@ end
 -- Reload current folder
 function M.reload()
   vim.notify("Reloading " .. state.current_folder .. "...", vim.log.levels.INFO)
+  
   reload_folders(true)
-  reload_emails(true)
+  
+  -- Reload emails with success notification
+  if not state.main then
+    return
+  end
+  
+  local height = vim.api.nvim_win_get_height(vim.api.nvim_get_current_win())
+  envelope.list({ folder = state.current_folder, page_size = height }, function(err, data)
+    if err then
+      vim.notify("Failed to load emails: " .. err, vim.log.levels.ERROR)
+      return
+    end
+    
+    envelope_list.render(state.main, data)
+    vim.notify("Reloaded " .. state.current_folder, vim.log.levels.INFO)
+  end)
 end
 
 return M
