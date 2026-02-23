@@ -31,8 +31,11 @@ function M.render(bufnr, envelopes)
     end
     line:append(flag .. " ", "HimalayaFlag")
     
-    -- From
-    local from = env.from.name or env.from.addr or "Unknown"
+    -- From - handle nil/null values
+    local from = "Unknown"
+    if env.from and type(env.from) == "table" then
+      from = env.from.name or env.from.addr or "Unknown"
+    end
     line:append(string.format("%-25s ", from:sub(1, 25)), "HimalayaFrom")
     
     -- Subject - truncate based on display width
