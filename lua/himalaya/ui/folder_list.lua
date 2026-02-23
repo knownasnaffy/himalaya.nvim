@@ -6,7 +6,7 @@ local config = require("himalaya.config")
 local M = {}
 
 -- Recursively render folder tree
-local function render_tree(items, lines, depth)
+local function render_tree(items, lines, depth, sidebar_width)
 	depth = depth or 0
 
 	for _, item in ipairs(items) do
@@ -28,12 +28,20 @@ local function render_tree(items, lines, depth)
 
 		-- Add space after icon if present, and horizontal padding
 		local display = icon ~= "" and (icon .. " " .. item.displayName) or item.displayName
-		line:append(" " .. indent .. display, hl_group)
+		local content = " " .. indent .. display
+		
+		-- Pad to full width if active folder
+		if hl_group == "HimalayaFolderActive" then
+			local padding = sidebar_width - vim.fn.strdisplaywidth(content)
+			content = content .. string.rep(" ", math.max(0, padding))
+		end
+		
+		line:append(content, hl_group)
 		table.insert(lines, line)
 
 		-- Render children recursively
 		if #item.children > 0 then
-			render_tree(item.children, lines, depth + 1)
+			render_tree(item.children, lines, depth + 1, sidebar_width)
 		end
 	end
 end
@@ -51,8 +59,11 @@ function M.render(bufnr, folders)
 	-- Clear buffer first
 	vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, {})
 
+	-- Get sidebar width
+	local sidebar_width = config.config.sidebar.width
+
 	local lines = {}
-	render_tree(tree, lines)
+	render_tree(tree, lines, 0, sidebar_width)
 
 	for i, line in ipairs(lines) do
 		line:render(bufnr, -1, i)
