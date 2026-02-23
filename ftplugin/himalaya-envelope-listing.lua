@@ -9,16 +9,22 @@ end, { buffer = bufnr, desc = "Close Himalaya" })
 -- Next folder (supports count)
 vim.keymap.set("n", "]f", function()
   local count = vim.v.count1
-  for _ = 1, count do
-    require("himalaya.folder").next()
+  local folder_mod = require("himalaya.folder")
+  
+  -- Navigate silently for all but the last
+  for i = 1, count do
+    folder_mod.next(i < count) -- silent if not last
   end
 end, { buffer = bufnr, desc = "Next folder" })
 
 -- Previous folder (supports count)
 vim.keymap.set("n", "[f", function()
   local count = vim.v.count1
-  for _ = 1, count do
-    require("himalaya.folder").previous()
+  local folder_mod = require("himalaya.folder")
+  
+  -- Navigate silently for all but the last
+  for i = 1, count do
+    folder_mod.previous(i < count) -- silent if not last
   end
 end, { buffer = bufnr, desc = "Previous folder" })
 

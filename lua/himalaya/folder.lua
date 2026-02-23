@@ -64,7 +64,7 @@ function M.switch_to(folder_name)
 end
 
 -- Navigate to next folder
-function M.next()
+function M.next(silent)
   if #state.folder_list == 0 then
     return
   end
@@ -85,20 +85,24 @@ function M.next()
       if config.config.wrap_folder_navigation then
         next_idx = 1
       else
-        vim.notify("Already at last folder", vim.log.levels.WARN)
+        if not silent then
+          vim.notify("Already at last folder", vim.log.levels.WARN)
+        end
         return
       end
     end
     state.current_folder = state.folder_list[next_idx]
   end
   
-  vim.notify("Switching to " .. state.current_folder .. "...", vim.log.levels.INFO)
+  if not silent then
+    vim.notify("Switching to " .. state.current_folder .. "...", vim.log.levels.INFO)
+  end
   reload_folders(true)
   reload_emails(true)
 end
 
 -- Navigate to previous folder
-function M.previous()
+function M.previous(silent)
   if #state.folder_list == 0 then
     return
   end
@@ -119,14 +123,18 @@ function M.previous()
       if config.config.wrap_folder_navigation then
         prev_idx = #state.folder_list
       else
-        vim.notify("Already at first folder", vim.log.levels.WARN)
+        if not silent then
+          vim.notify("Already at first folder", vim.log.levels.WARN)
+        end
         return
       end
     end
     state.current_folder = state.folder_list[prev_idx]
   end
   
-  vim.notify("Switching to " .. state.current_folder .. "...", vim.log.levels.INFO)
+  if not silent then
+    vim.notify("Switching to " .. state.current_folder .. "...", vim.log.levels.INFO)
+  end
   reload_folders(true)
   reload_emails(true)
 end
