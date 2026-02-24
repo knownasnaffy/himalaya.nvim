@@ -13,18 +13,34 @@ local actions = {
 
 	next_folder = function()
 		local count = vim.v.count1
-		for i = 1, count - 1 do
+		local start_folder = require("himalaya.state").current_folder
+		
+		for i = 1, count do
 			folder_mod.next(true, true)
 		end
-		folder_mod.next(false, false)
+		
+		-- Check if we actually moved
+		local end_folder = require("himalaya.state").current_folder
+		if start_folder ~= end_folder then
+			-- Force reload after all navigation
+			folder_mod.reload()
+		end
 	end,
 
 	previous_folder = function()
 		local count = vim.v.count1
-		for i = 1, count - 1 do
+		local start_folder = require("himalaya.state").current_folder
+		
+		for i = 1, count do
 			folder_mod.previous(true, true)
 		end
-		folder_mod.previous(false, false)
+		
+		-- Check if we actually moved
+		local end_folder = require("himalaya.state").current_folder
+		if start_folder ~= end_folder then
+			-- Force reload after all navigation
+			folder_mod.reload()
+		end
 	end,
 
 	folder_picker = function()

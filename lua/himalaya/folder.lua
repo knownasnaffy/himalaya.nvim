@@ -79,29 +79,37 @@ function M.next(silent, skip_reload)
 		end
 	end
 
+	local changed = false
 	if not current_idx then
 		state.current_folder = state.folder_list[1]
+		changed = true
 	else
 		local next_idx = current_idx + 1
 		if next_idx > #state.folder_list then
 			if config.config.wrap_folder_navigation then
 				next_idx = 1
 			else
-				if not silent then
-					vim.notify("Already at last folder", vim.log.levels.WARN)
-				end
-				return
+				-- Clamp to last folder
+				next_idx = #state.folder_list
 			end
 		end
-		state.current_folder = state.folder_list[next_idx]
+
+		-- Check if we're moving to a different folder
+		if next_idx ~= current_idx then
+			state.current_folder = state.folder_list[next_idx]
+			changed = true
+		end
 	end
 
-	if not skip_reload then
+	-- Only reload if we actually changed folders and not skipping
+	if changed and not skip_reload then
 		if not silent then
 			layout.show_spinner("Switching folder")
 		end
 		reload_folders(true)
 		reload_emails(true)
+	elseif not changed and not silent and not skip_reload then
+		vim.notify("Already at last folder", vim.log.levels.WARN)
 	end
 end
 
@@ -119,29 +127,37 @@ function M.previous(silent, skip_reload)
 		end
 	end
 
+	local changed = false
 	if not current_idx then
 		state.current_folder = state.folder_list[1]
+		changed = true
 	else
 		local prev_idx = current_idx - 1
 		if prev_idx < 1 then
 			if config.config.wrap_folder_navigation then
 				prev_idx = #state.folder_list
 			else
-				if not silent then
-					vim.notify("Already at first folder", vim.log.levels.WARN)
-				end
-				return
+				-- Clamp to first folder
+				prev_idx = 1
 			end
 		end
-		state.current_folder = state.folder_list[prev_idx]
+
+		-- Check if we're moving to a different folder
+		if prev_idx ~= current_idx then
+			state.current_folder = state.folder_list[prev_idx]
+			changed = true
+		end
 	end
 
-	if not skip_reload then
+	-- Only reload if we actually changed folders and not skipping
+	if changed and not skip_reload then
 		if not silent then
 			layout.show_spinner("Switching folder")
 		end
 		reload_folders(true)
 		reload_emails(true)
+	elseif not changed and not silent and not skip_reload then
+		vim.notify("Already at first folder", vim.log.levels.WARN)
 	end
 end
 
