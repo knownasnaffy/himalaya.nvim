@@ -15,8 +15,19 @@ function M.open()
 		return
 	end
 
-	local l = layout.create()
-	l:mount()
+	-- Detect launch method
+	local is_cmdline = vim.v.vim_did_enter == 0
+	vim.notify("Himalaya launched via: " .. (is_cmdline and "cmdline" or "command/keybind"), vim.log.levels.INFO)
+
+	if is_cmdline then
+		-- Use fullscreen native split layout
+		require("himalaya.ui.fullscreen").create()
+	else
+		-- Use nui popup layout
+		local l = layout.create()
+		l:mount()
+	end
+	
 	state.is_open = true
 end
 

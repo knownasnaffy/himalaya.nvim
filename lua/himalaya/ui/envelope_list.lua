@@ -44,7 +44,9 @@ function M.render(bufnr, envelopes)
 		if env.from then
 			from = env.from.name or env.from.addr or "Unknown"
 		end
-		line:append(string.format("%-25s ", from:sub(1, 25)), "HimalayaFrom")
+		local from_display = from:sub(1, 25)
+		local from_padding = 25 - vim.fn.strdisplaywidth(from_display)
+		line:append(from_display .. string.rep(" ", from_padding) .. " ", "HimalayaFrom")
 
 		-- Subject - truncate based on display width
 		local subject = env.subject or "(no subject)"

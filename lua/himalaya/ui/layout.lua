@@ -59,7 +59,7 @@ end
 function M.create()
 	local sidebar = Popup({
 		enter = false,
-		focusable = false, -- Disable focus, managed by commands
+		focusable = false,
 		border = {
 			style = "rounded",
 			text = {
