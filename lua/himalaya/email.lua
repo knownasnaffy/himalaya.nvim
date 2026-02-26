@@ -57,6 +57,18 @@ function M.close()
 	)
 
 	state.email_visible = false
+
+	-- Realign main window content to fill the space
+	vim.schedule(function()
+		local main_win = vim.fn.bufwinid(state.main)
+		if main_win ~= -1 then
+			vim.api.nvim_set_current_win(main_win)
+			-- Scroll to top then back to maintain proper alignment
+			local cursor = vim.api.nvim_win_get_cursor(main_win)
+			vim.cmd("normal! gg")
+			vim.api.nvim_win_set_cursor(main_win, cursor)
+		end
+	end)
 end
 
 return M
