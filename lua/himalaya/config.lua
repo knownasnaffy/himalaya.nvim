@@ -14,6 +14,8 @@ M.config = {
 			["[f"] = "previous_folder",
 			["gF"] = "folder_picker",
 			["gr"] = "reload",
+			["]]"] = "next_page",
+			["[["] = "previous_page",
 		},
 	},
 }

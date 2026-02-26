@@ -3,6 +3,7 @@ local bufnr = vim.api.nvim_get_current_buf()
 local config = require("himalaya.config")
 local keymap_util = require("himalaya.utils.keymap")
 local folder_mod = require("himalaya.folder")
+local page_mod = require("himalaya.page")
 local himalaya = require("himalaya")
 
 -- Define default actions
@@ -49,6 +50,14 @@ local actions = {
 
 	reload = function()
 		folder_mod.reload()
+	end,
+
+	next_page = function()
+		page_mod.next()
+	end,
+
+	previous_page = function()
+		page_mod.previous()
 	end,
 }
 
