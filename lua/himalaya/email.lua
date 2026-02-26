@@ -24,7 +24,7 @@ function M.open()
 			Layout.Box(state.sidebar_popup, { size = config.config.sidebar.width }),
 			Layout.Box({
 				Layout.Box(state.main_popup, { size = "50%" }),
-				Layout.Box(state.email_popup, { size = "50%" }),
+				Layout.Box(state.email_popup, { grow = 1 }),
 			}, { dir = "col", grow = 1 }),
 		}, { dir = "row" })
 	)
