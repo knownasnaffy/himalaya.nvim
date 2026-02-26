@@ -68,7 +68,7 @@ function M.update_page_footer()
 			padding_needed = 0
 		end
 		
-		local footer_text = left_text .. string.rep(" ", padding_needed) .. right_text
+		local footer_text = left_text .. string.rep("─", padding_needed) .. right_text
 		state.main_popup.border:set_text("bottom", footer_text, "left")
 	end
 end
@@ -98,8 +98,6 @@ function M.create()
 			text = {
 				top = " Emails ",
 				top_align = "center",
-				bottom = " Page 1 ",
-				bottom_align = "center",
 			},
 		},
 		win_options = {
@@ -197,6 +195,7 @@ function M.create()
 	local cached_envelopes = cache.get_envelopes(state.current_folder, state.current_page)
 	if cached_envelopes then
 		envelope_list.render(main.bufnr, cached_envelopes)
+		M.update_page_footer()
 	else
 		M.show_spinner("Loading")
 		envelope.list({ page_size = main_height }, function(err, data)
@@ -209,6 +208,7 @@ function M.create()
 			cache.set_envelopes(state.current_folder, state.current_page, data)
 			envelope_list.render(main.bufnr, data)
 			M.hide_spinner()
+			M.update_page_footer()
 		end)
 	end
 
