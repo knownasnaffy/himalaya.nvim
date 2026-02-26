@@ -36,7 +36,7 @@ function M.reload()
 
 	layout.show_spinner("Loading page " .. state.current_page)
 
-	envelope.list({ page = state.current_page, page_size = main_height }, function(err, data)
+	envelope.list({ folder = state.current_folder, page = state.current_page, page_size = main_height }, function(err, data)
 		if err then
 			layout.hide_spinner()
 			vim.notify("Failed to load emails: " .. err, vim.log.levels.ERROR)
