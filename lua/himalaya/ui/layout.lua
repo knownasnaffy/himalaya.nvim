@@ -52,7 +52,11 @@ end
 
 function M.update_page_footer()
 	if state.main_popup then
-		state.main_popup.border:set_text("bottom", " Page " .. state.current_page .. " ", "center")
+		-- Try setting multiple texts on bottom border
+		state.main_popup.border:set_text("bottom", {
+			{ " Page " .. state.current_page .. " ", align = "left" },
+			{ " Total: 50 ", align = "right" },
+		})
 	end
 end
 
