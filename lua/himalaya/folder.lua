@@ -21,6 +21,7 @@ local function reload_emails(silent)
 	state.current_page = 1
 	layout.update_page_footer()
 
+	local cache = require("himalaya.cache")
 	local height = vim.api.nvim_win_get_height(vim.api.nvim_get_current_win())
 	envelope.list({ folder = state.current_folder, page_size = height }, function(err, data)
 		if err then
@@ -29,6 +30,7 @@ local function reload_emails(silent)
 			return
 		end
 
+		cache.set_envelopes(state.current_folder, state.current_page, data)
 		envelope_list.render(state.main, data)
 		layout.hide_spinner()
 	end)

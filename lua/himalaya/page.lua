@@ -32,6 +32,7 @@ function M.reload()
 	end
 
 	local main_height = vim.api.nvim_win_get_height(main_win)
+	local cache = require("himalaya.cache")
 
 	layout.show_spinner("Loading page " .. state.current_page)
 
@@ -42,6 +43,7 @@ function M.reload()
 			return
 		end
 
+		cache.set_envelopes(state.current_folder, state.current_page, data)
 		envelope_list.render(state.main, data)
 		layout.hide_spinner()
 		layout.update_page_footer()

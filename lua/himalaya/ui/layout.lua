@@ -136,30 +136,45 @@ function M.create()
 	state.main = main.bufnr
 	state.main_popup = main
 
-	M.show_spinner("Loading")
+	local cache = require("himalaya.cache")
 
-	-- Load folders
-	folder.list({}, function(err, data)
-		if err then
+	-- Load folders (use cache if available)
+	local cached_folders = cache.get_folders()
+	if cached_folders then
+		folder_list.render(sidebar.bufnr, cached_folders)
+	else
+		M.show_spinner("Loading")
+		folder.list({}, function(err, data)
+			if err then
+				M.hide_spinner()
+				vim.notify("Failed to load folders: " .. err, vim.log.levels.ERROR)
+				return
+			end
+
+			cache.set_folders(data)
+			folder_list.render(sidebar.bufnr, data)
 			M.hide_spinner()
-			vim.notify("Failed to load folders: " .. err, vim.log.levels.ERROR)
-			return
-		end
+		end)
+	end
 
-		folder_list.render(sidebar.bufnr, data)
-	end)
+	-- Load envelopes (use cache if available)
+	local cached_envelopes = cache.get_envelopes(state.current_folder, state.current_page)
+	if cached_envelopes then
+		envelope_list.render(main.bufnr, cached_envelopes)
+	else
+		M.show_spinner("Loading")
+		envelope.list({ page_size = main_height }, function(err, data)
+			if err then
+				M.hide_spinner()
+				vim.notify("Failed to load emails: " .. err, vim.log.levels.ERROR)
+				return
+			end
 
-	-- Load envelopes with page_size matching window height
-	envelope.list({ page_size = main_height }, function(err, data)
-		if err then
+			cache.set_envelopes(state.current_folder, state.current_page, data)
+			envelope_list.render(main.bufnr, data)
 			M.hide_spinner()
-			vim.notify("Failed to load emails: " .. err, vim.log.levels.ERROR)
-			return
-		end
-
-		envelope_list.render(main.bufnr, data)
-		M.hide_spinner()
-	end)
+		end)
+	end
 
 	return layout
 end
