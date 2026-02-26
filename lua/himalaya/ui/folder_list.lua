@@ -25,11 +25,11 @@ local function render_tree(items, lines, depth, active_line)
 		-- Folder icon
 		local icon = ""
 		if config.config.icons_enabled then
-			icon = (#item.children > 0) and "" or ""
+			icon = (#item.children > 0) and "\u{e5fe}" or "\u{e5ff}"
 		end
 
 		-- Add space after icon if present, and horizontal padding
-		local display = icon ~= "" and (icon .. " " .. item.displayName) or item.displayName
+		local display = (icon ~= "") and (icon .. " " .. item.displayName) or item.displayName
 		local content = " " .. indent .. display
 
 		line:append(content, "HimalayaFolder")

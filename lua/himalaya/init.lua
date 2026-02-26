@@ -17,7 +17,6 @@ function M.open()
 
 	-- Detect launch method
 	local is_cmdline = vim.v.vim_did_enter == 0
-	vim.notify("Himalaya launched via: " .. (is_cmdline and "cmdline" or "command/keybind"), vim.log.levels.INFO)
 
 	if is_cmdline then
 		-- Use fullscreen native split layout
