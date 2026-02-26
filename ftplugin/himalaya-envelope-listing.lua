@@ -4,6 +4,7 @@ local config = require("himalaya.config")
 local keymap_util = require("himalaya.utils.keymap")
 local folder_mod = require("himalaya.folder")
 local page_mod = require("himalaya.page")
+local email_mod = require("himalaya.email")
 local himalaya = require("himalaya")
 
 -- Define default actions
@@ -58,6 +59,10 @@ local actions = {
 
 	previous_page = function()
 		page_mod.previous(vim.v.count1)
+	end,
+
+	open_email = function()
+		email_mod.open()
 	end,
 }
 

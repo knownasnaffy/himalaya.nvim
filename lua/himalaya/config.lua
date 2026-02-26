@@ -16,6 +16,7 @@ M.config = {
 			["gr"] = "reload",
 			["]]"] = "next_page",
 			["[["] = "previous_page",
+			["<CR>"] = "open_email",
 		},
 	},
 }

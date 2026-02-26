@@ -91,6 +91,22 @@ function M.create()
 		zindex = 49,
 	})
 
+	local email = Popup({
+		enter = false,
+		focusable = true,
+		border = {
+			style = "rounded",
+			text = {
+				top = " Email ",
+				top_align = "center",
+			},
+		},
+		win_options = {
+			cursorline = true,
+		},
+		zindex = 49,
+	})
+
 	local layout = Layout(
 		{
 			position = "50%",
@@ -110,6 +126,7 @@ function M.create()
 
 	-- Set filetype for sidebar
 	vim.bo[sidebar.bufnr].filetype = "himalaya-folder-listing"
+	vim.bo[email.bufnr].filetype = "himalaya-email"
 
 	-- Get window height for main panel
 	local main_winid = vim.api.nvim_get_current_win()
@@ -135,6 +152,8 @@ function M.create()
 	state.sidebar_popup = sidebar
 	state.main = main.bufnr
 	state.main_popup = main
+	state.email = email.bufnr
+	state.email_popup = email
 
 	local cache = require("himalaya.cache")
 
