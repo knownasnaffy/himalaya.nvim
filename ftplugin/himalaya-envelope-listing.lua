@@ -53,11 +53,11 @@ local actions = {
 	end,
 
 	next_page = function()
-		page_mod.next()
+		page_mod.next(vim.v.count1)
 	end,
 
 	previous_page = function()
-		page_mod.previous()
+		page_mod.previous(vim.v.count1)
 	end,
 }
 

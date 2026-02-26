@@ -5,16 +5,20 @@ local layout = require("himalaya.ui.layout")
 
 local M = {}
 
-function M.next()
-	state.current_page = state.current_page + 1
+function M.next(count)
+	count = count or 1
+	state.current_page = state.current_page + count
 	M.reload()
 end
 
-function M.previous()
-	if state.current_page > 1 then
-		state.current_page = state.current_page - 1
-		M.reload()
+function M.previous(count)
+	count = count or 1
+	if state.current_page > count then
+		state.current_page = state.current_page - count
+	else
+		state.current_page = 1
 	end
+	M.reload()
 end
 
 function M.reload()
