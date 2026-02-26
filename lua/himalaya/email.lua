@@ -9,9 +9,12 @@ function M.open()
 		return
 	end
 
-	-- Toggle if already open
+	-- If already open, just focus it
 	if state.email_visible then
-		M.close()
+		local email_win = vim.fn.bufwinid(state.email)
+		if email_win ~= -1 then
+			vim.api.nvim_set_current_win(email_win)
+		end
 		return
 	end
 
@@ -27,6 +30,14 @@ function M.open()
 	)
 
 	state.email_visible = true
+
+	-- Focus email window
+	vim.schedule(function()
+		local email_win = vim.fn.bufwinid(state.email)
+		if email_win ~= -1 then
+			vim.api.nvim_set_current_win(email_win)
+		end
+	end)
 
 	-- TODO: Load email content
 	vim.api.nvim_buf_set_lines(state.email, 0, -1, false, { "Email content will appear here" })

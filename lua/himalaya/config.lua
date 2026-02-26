@@ -18,6 +18,10 @@ M.config = {
 			["[["] = "previous_page",
 			["<CR>"] = "open_email",
 		},
+		email = {
+			["gq"] = "close_email",
+			["q"] = "close_email",
+		},
 	},
 }
 
