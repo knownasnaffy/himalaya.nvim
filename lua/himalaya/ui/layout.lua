@@ -52,11 +52,24 @@ end
 
 function M.update_page_footer()
 	if state.main_popup then
-		-- Try setting multiple texts on bottom border
-		state.main_popup.border:set_text("bottom", {
-			{ " Page " .. state.current_page .. " ", align = "left" },
-			{ " Total: 50 ", align = "right" },
-		})
+		-- Get window width to calculate padding
+		local main_win = vim.fn.bufwinid(state.main)
+		if main_win == -1 then
+			return
+		end
+		
+		local win_width = vim.api.nvim_win_get_width(main_win)
+		local left_text = " Page " .. state.current_page .. " "
+		local right_text = " Total: 50 "
+		
+		-- Calculate padding needed (account for border chars)
+		local padding_needed = win_width - vim.fn.strdisplaywidth(left_text) - vim.fn.strdisplaywidth(right_text)
+		if padding_needed < 0 then
+			padding_needed = 0
+		end
+		
+		local footer_text = left_text .. string.rep(" ", padding_needed) .. right_text
+		state.main_popup.border:set_text("bottom", footer_text, "left")
 	end
 end
 
