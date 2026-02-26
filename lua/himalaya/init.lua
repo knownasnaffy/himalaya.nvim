@@ -26,7 +26,7 @@ function M.open()
 		local l = layout.create()
 		l:mount()
 	end
-	
+
 	state.is_open = true
 end
 

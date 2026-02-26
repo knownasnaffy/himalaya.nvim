@@ -15,11 +15,11 @@ local actions = {
 	next_folder = function()
 		local count = vim.v.count1
 		local start_folder = require("himalaya.state").current_folder
-		
+
 		for i = 1, count do
 			folder_mod.next(true, true)
 		end
-		
+
 		-- Check if we actually moved
 		local end_folder = require("himalaya.state").current_folder
 		if start_folder ~= end_folder then
@@ -31,11 +31,11 @@ local actions = {
 	previous_folder = function()
 		local count = vim.v.count1
 		local start_folder = require("himalaya.state").current_folder
-		
+
 		for i = 1, count do
 			folder_mod.previous(true, true)
 		end
-		
+
 		-- Check if we actually moved
 		local end_folder = require("himalaya.state").current_folder
 		if start_folder ~= end_folder then
