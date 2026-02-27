@@ -1,8 +1,8 @@
-# himalaya.nvim
-
-Modern Neovim plugin for [Himalaya CLI](https://github.com/pimalaya/himalaya) - a CLI email client.
-
-## Demo
+<div align="center">
+  <img width="128" height="128" alt="output-nvim" src="https://github.com/user-attachments/assets/0ce78792-0def-4198-9659-73ce50dfa3f8" />
+  <h1>himalaya.nvim</h1>
+  <p>Modern Neovim plugin for <a href="https://github.com/pimalaya/himalaya">Himalaya CLI</a> - a CLI email client.</p>
+</div>
 
 <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/be56131f-c687-4259-ba00-7c75349ce3d5" />
 
