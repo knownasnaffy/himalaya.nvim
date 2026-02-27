@@ -7,22 +7,26 @@ Keep it simple. Focus on core email workflows. Avoid feature bloat.
 ## Recommended Approach
 
 ### 1. **Layout System** (Phase 1)
+
 - Vertical sidebar (left): folder list
 - Main area (right): email list/content
 - Split behavior: horizontal split within main area only
 - Use nui.nvim Layout component for window management
 
 ### 2. **State Management** (Phase 2)
+
 - Single source of truth for app state
 - Minimal state: current account, folder, selected email
 - Reactive updates when state changes
 
 ### 3. **CLI Integration** (Phase 3)
+
 - Async job execution for himalaya commands
 - Parse JSON output (`--output json`)
 - Error handling with user feedback
 
 ### 4. **UI Components** (Phase 4)
+
 - Folder list: tree-like structure with counts
 - Email list: table with from/subject/date/flags
 - Email viewer: formatted message display

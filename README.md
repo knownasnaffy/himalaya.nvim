@@ -18,13 +18,14 @@ Himalaya is a Rust-based CLI tool for managing emails from the terminal. This pl
 🚧 Under active development
 
 ### ✅ Milestone 1: Core Features (Completed)
+
 - **Email listing**: Display with sender, subject, and relative date
 - **Folder navigation**: Sidebar with tree structure, next/previous/picker/reload
 - **Page navigation**: `]]` / `[[` with count support
 - **Email reading**: Open email in 50/50 split below with `<CR>`
 - **Caching**: Instant subsequent launches with cached data
 - **Fullscreen mode**: Native split layout when launched via `nvim +':Himalaya'`
-- **Visual polish**: 
+- **Visual polish**:
   - Unicode support in subjects and sender names
   - Real cursorline for active folder
   - Animated spinner for loading states
@@ -69,20 +70,22 @@ Open the email client:
 Default keybindings (all customizable):
 
 #### Email Listing
-| Key | Action |
-|-----|--------|
-| `gq` | Close Himalaya |
-| `]f` | Next folder (supports count) |
-| `[f` | Previous folder (supports count) |
-| `gF` | Folder picker |
-| `gr` | Reload current folder |
-| `]]` | Next page (supports count) |
-| `[[` | Previous page (supports count) |
-| `<CR>` | Open email in split below |
+
+| Key    | Action                           |
+| ------ | -------------------------------- |
+| `gq`   | Close Himalaya                   |
+| `]f`   | Next folder (supports count)     |
+| `[f`   | Previous folder (supports count) |
+| `gF`   | Folder picker                    |
+| `gr`   | Reload current folder            |
+| `]]`   | Next page (supports count)       |
+| `[[`   | Previous page (supports count)   |
+| `<CR>` | Open email in split below        |
 
 #### Email Reading
-| Key | Action |
-|-----|--------|
+
+| Key        | Action           |
+| ---------- | ---------------- |
 | `gq` / `q` | Close email pane |
 
 ## Configuration
@@ -127,17 +130,17 @@ keymaps = {
   listing = {
     -- Simple action mapping
     ["gq"] = "close",
-    
+
     -- Multiple keys for same action
     ["]f"] = "next_folder",
     ["<Tab>"] = "next_folder",
-    
+
     -- Custom function
     ["<leader>r"] = function()
       require("himalaya.folder").reload()
       vim.notify("Reloaded!", vim.log.levels.INFO)
     end,
-    
+
     -- Custom function with description
     ["<leader>R"] = {
       function()
@@ -145,10 +148,10 @@ keymaps = {
       end,
       desc = "Reload with custom action"
     },
-    
+
     -- Action with config (for future extensions)
     ["gF"] = { "folder_picker", config = { picker = "telescope" } },
-    
+
     -- Remove a default keymap (don't map it)
     ["gr"] = nil,
   },
@@ -158,6 +161,7 @@ keymaps = {
 **Available actions:**
 
 **Listing:**
+
 - `close` - Close Himalaya window
 - `next_folder` - Navigate to next folder (supports count)
 - `previous_folder` - Navigate to previous folder (supports count)
@@ -168,6 +172,7 @@ keymaps = {
 - `open_email` - Open email in split below
 
 **Email:**
+
 - `close_email` - Close email pane
 
 Or with lazy.nvim using `opts`:

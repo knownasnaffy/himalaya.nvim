@@ -13,12 +13,14 @@
 ```
 
 ### Sidebar (Left)
+
 - Fixed width (configurable, default: 30 cols)
 - Shows folder tree
 - Displays unread count per folder
 - Always visible
 
 ### Main Area (Right)
+
 - Takes remaining width
 - Initially shows email list
 - Can split horizontally for email viewing
@@ -44,6 +46,7 @@ When viewing an email (press Enter on email list):
 ## Component Details
 
 ### Sidebar Component
+
 ```
 Folders
 ├─ INBOX (12)
@@ -62,6 +65,7 @@ Folders
   - `R`: refresh
 
 ### Email List Component
+
 ```
 ┌──────────────────────────────────────────────────────┐
 │ From          Subject                    Date  Flags │
@@ -83,6 +87,7 @@ Folders
   - `c`: compose new
 
 ### Email Viewer Component
+
 ```
 From: alice@example.com
 To: me@example.com

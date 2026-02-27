@@ -3,15 +3,17 @@
 ## How Default Account Works
 
 ### Account Discovery
+
 ```bash
 himalaya account list --output json
 ```
 
 Returns:
+
 ```json
 [
-  {"name":"main","backend":"IMAP, SMTP","default":true},
-  {"name":"pro","backend":"IMAP, SMTP","default":false}
+  { "name": "main", "backend": "IMAP, SMTP", "default": true },
+  { "name": "pro", "backend": "IMAP, SMTP", "default": false }
 ]
 ```
 
@@ -20,6 +22,7 @@ The account with `"default": true` is the default account.
 ### Implementation in himalaya-vim
 
 1. **No automatic initialization**: Account is stored as empty string initially
+
    ```vim
    let s:account = ''
    ```
@@ -30,6 +33,7 @@ The account with `"default": true` is the default account.
    - Account is set via `himalaya#domain#account#set(account)`
 
 3. **Account selection flow**:
+
    ```
    :Himalaya
    └─> himalaya#domain#email#list()
@@ -55,11 +59,13 @@ The account with `"default": true` is the default account.
 ## Recommendation for himalaya.nvim
 
 **Option 1: Follow himalaya-vim approach**
+
 - Start with empty account
 - Let CLI handle default
 - Simple and reliable
 
 **Option 2: Fetch default explicitly**
+
 - Call `himalaya account list --output json`
 - Parse and find `"default": true`
 - Store in state

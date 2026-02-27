@@ -1,17 +1,20 @@
 # Himalaya CLI: envelope list
 
 ## Command
+
 ```bash
 RUST_LOG=off himalaya envelope list --output json [OPTIONS]
 ```
 
 ## Options
+
 - `--folder <name>`: Folder to list from (default: INBOX)
 - `--account <name>`: Account to use (default: default account)
 - `--page-size <n>`: Number of envelopes per page
 - `--page <n>`: Page number (1-indexed)
 
 ## Output Format
+
 ```json
 [
   {
@@ -33,6 +36,7 @@ RUST_LOG=off himalaya envelope list --output json [OPTIONS]
 ```
 
 ## Fields
+
 - `id` (string): Unique envelope identifier
 - `flags` (array): Email flags (Seen, Flagged, etc.)
 - `subject` (string): Email subject
@@ -42,6 +46,7 @@ RUST_LOG=off himalaya envelope list --output json [OPTIONS]
 - `has_attachment` (boolean): Whether email has attachments
 
 ## Usage
+
 ```bash
 # List from default folder (INBOX)
 himalaya envelope list --output json --page-size 20
@@ -54,5 +59,6 @@ himalaya envelope list --output json --page 2 --page-size 20
 ```
 
 ## Notes
+
 - Use `RUST_LOG=off` to suppress log output
 - Returns array of envelopes, newest first by default

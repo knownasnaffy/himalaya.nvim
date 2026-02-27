@@ -57,17 +57,17 @@ function M.update_page_footer()
 		if main_win == -1 then
 			return
 		end
-		
+
 		local win_width = vim.api.nvim_win_get_width(main_win)
 		local left_text = " Page " .. state.current_page .. " "
 		local right_text = " Total: 50 "
-		
+
 		-- Calculate padding needed (account for border chars)
 		local padding_needed = win_width - vim.fn.strdisplaywidth(left_text) - vim.fn.strdisplaywidth(right_text)
 		if padding_needed < 0 then
 			padding_needed = 0
 		end
-		
+
 		local footer_text = left_text .. string.rep("─", padding_needed) .. right_text
 		state.main_popup.border:set_text("bottom", footer_text, "left")
 	end

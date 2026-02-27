@@ -24,6 +24,7 @@ This is the MOST IMPORTANT part of the development process.
 ```
 
 **Types:**
+
 - `feat`: New feature
 - `fix`: Bug fix
 - `refactor`: Code restructuring
@@ -32,6 +33,7 @@ This is the MOST IMPORTANT part of the development process.
 - `chore`: Maintenance tasks
 
 **Examples:**
+
 ```
 feat: implement sidebar layout with nui.nvim
 
@@ -67,16 +69,19 @@ docs: update README with installation steps
 ### Incremental Building
 
 **Phase 1: Read-Only (Foundation)**
+
 1. View folders
 2. View email list
 3. Read messages
 
 **Phase 2: Actions**
+
 1. Delete emails
 2. Move emails
 3. Flag/unflag emails
 
 **Phase 3: Composition**
+
 1. Write new emails
 2. Reply to emails
 3. Forward emails

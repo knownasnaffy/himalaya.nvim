@@ -19,15 +19,13 @@ function M.open()
 	end
 
 	-- Update layout to show email popup
-	state.layout:update(
+	state.layout:update(Layout.Box({
+		Layout.Box(state.sidebar_popup, { size = config.config.sidebar.width }),
 		Layout.Box({
-			Layout.Box(state.sidebar_popup, { size = config.config.sidebar.width }),
-			Layout.Box({
-				Layout.Box(state.main_popup, { size = "50%" }),
-				Layout.Box(state.email_popup, { grow = 1 }),
-			}, { dir = "col", grow = 1 }),
-		}, { dir = "row" })
-	)
+			Layout.Box(state.main_popup, { size = "50%" }),
+			Layout.Box(state.email_popup, { grow = 1 }),
+		}, { dir = "col", grow = 1 }),
+	}, { dir = "row" }))
 
 	state.email_visible = true
 
@@ -49,12 +47,10 @@ function M.close()
 	end
 
 	-- Update layout to hide email popup
-	state.layout:update(
-		Layout.Box({
-			Layout.Box(state.sidebar_popup, { size = config.config.sidebar.width }),
-			Layout.Box(state.main_popup, { grow = 1 }),
-		}, { dir = "row" })
-	)
+	state.layout:update(Layout.Box({
+		Layout.Box(state.sidebar_popup, { size = config.config.sidebar.width }),
+		Layout.Box(state.main_popup, { grow = 1 }),
+	}, { dir = "row" }))
 
 	state.email_visible = false
 
