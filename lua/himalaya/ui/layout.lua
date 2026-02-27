@@ -60,7 +60,7 @@ function M.update_page_footer()
 
 		local win_width = vim.api.nvim_win_get_width(main_win)
 		local left_text = " Page " .. state.current_page .. " "
-		local right_text = " Total: 50 "
+		local right_text = " Total: " .. state.current_envelope_count .. " "
 
 		-- Calculate padding needed (account for border chars)
 		local padding_needed = win_width - vim.fn.strdisplaywidth(left_text) - vim.fn.strdisplaywidth(right_text)

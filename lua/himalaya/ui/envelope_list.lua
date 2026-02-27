@@ -1,5 +1,6 @@
 local NuiLine = require("nui.line")
 local date_utils = require("himalaya.utils.date")
+local state = require("himalaya.state")
 
 local M = {}
 
@@ -12,8 +13,12 @@ function M.render(bufnr, envelopes)
 		vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, { "No emails in this folder" })
 		vim.bo[bufnr].modifiable = false
 		vim.bo[bufnr].modified = false
+		state.current_envelope_count = 0
 		return
 	end
+
+	-- Track envelope count
+	state.current_envelope_count = #envelopes
 
 	-- Use fixed max date width
 	local max_date_width = date_utils.max_date_width()

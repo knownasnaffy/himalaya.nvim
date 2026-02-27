@@ -3,6 +3,7 @@ local M = {}
 M.current_account = ""
 M.current_folder = "INBOX"
 M.current_page = 1
+M.current_envelope_count = 0 -- Number of emails in current view
 M.layout = nil
 M.sidebar = nil -- Buffer number
 M.main = nil -- Buffer number
