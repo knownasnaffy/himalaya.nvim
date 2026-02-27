@@ -2,6 +2,10 @@
 
 Modern Neovim plugin for [Himalaya CLI](https://github.com/pimalaya/himalaya) - a CLI email client.
 
+## Demo
+
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/be56131f-c687-4259-ba00-7c75349ce3d5" />
+
 ## About
 
 Himalaya is a Rust-based CLI tool for managing emails from the terminal. This plugin provides a native Neovim interface using Lua and [nui.nvim](https://github.com/MunifTanjim/nui.nvim) for UI components.
