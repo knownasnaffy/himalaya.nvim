@@ -32,7 +32,9 @@ local function render_tree(items, lines, depth, active_line)
 		local display = (icon ~= "") and (icon .. " " .. item.displayName) or item.displayName
 		local content = " " .. indent .. display
 
-		line:append(content, "HimalayaFolder")
+		-- Use different highlight for folders without name (non-selectable)
+		local highlight = item.name and "HimalayaFolder" or "HimalayaFolderDisabled"
+		line:append(content, highlight)
 
 		-- Render children recursively
 		if #item.children > 0 then
