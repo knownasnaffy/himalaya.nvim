@@ -37,56 +37,68 @@ function M.open()
         end
     end)
 
-  
     -- async email content loading implementation
-    -- Get the current window and line from the main buffer (email list)
     local main_win = vim.fn.bufwinid(state.main)
     if main_win == -1 then return end
 
     local cursor = vim.api.nvim_win_get_cursor(main_win)
-    local current_line = vim.api.nvim_buf_get_lines(state.main, cursor[1] - 1, cursor[1], false)[1]
+    local current_row = cursor[1] 
 
-    if not current_line or current_line == "" then return end
+    vim.api.nvim_buf_set_lines(state.email, 0, -1, false, { "Loading..." })
 
-    -- Attempt to extract the ID from the line. 
-    -- NOTE: The regex "%d+" matches the first sequence of numbers in the line.
-    -- If the ID is not visible in the line or conflicts with numbers in the subject, 
-    -- we might need to fetch the ID directly from the plugin's state table (e.g., state.emails[cursor[1]].id).
-    local email_id = string.match(current_line, "%d+")
+    local list_cmd = { "himalaya", "envelope", "list", "--page-size", "100", "--output", "json" }
 
-    if not email_id then
-        vim.api.nvim_buf_set_lines(state.email, 0, -1, false, { 
-            "Error: Could not identify the numeric ID in the selected line.",
-            "Line content: " .. current_line 
-        })
-        return
+    if state.current_folder and state.current_folder ~= "" then
+        table.insert(list_cmd, "--folder")
+        table.insert(list_cmd, state.current_folder)
+    end
+    
+    if state.current_page then
+        table.insert(list_cmd, "--page")
+        table.insert(list_cmd, tostring(state.current_page))
     end
 
-    -- Visual loading feedback
-    vim.api.nvim_buf_set_lines(state.email, 0, -1, false, { "Loading email ID " .. email_id .. "..." })
-
-    -- Execute the Himalaya CLI asynchronously
-    vim.fn.jobstart({"himalaya", "read", email_id}, {
+    local json_str = ""
+    vim.fn.jobstart(list_cmd, {
         stdout_buffered = true,
         on_stdout = function(_, data)
-            if data and #data > 0 then
-                vim.schedule(function()
-                    -- Check if the buffer still exists before injecting text 
-                    -- (prevents crashes if the user closes the window too quickly)
-                    if vim.api.nvim_buf_is_valid(state.email) then
-                        vim.api.nvim_buf_set_lines(state.email, 0, -1, false, data)
-                    end
-                end)
+            if data then
+                json_str = json_str .. table.concat(data, "\n")
             end
         end,
-        on_stderr = function(_, data)
-            if data and #data > 0 and data[1] ~= "" then
-                vim.schedule(function()
+        on_exit = function(_, code)
+            vim.schedule(function()
+                if code ~= 0 or json_str == "" then
                     if vim.api.nvim_buf_is_valid(state.email) then
-                        vim.api.nvim_buf_set_lines(state.email, 0, -1, false, { "Error reading email via CLI:", unpack(data) })
+                        vim.api.nvim_buf_set_lines(state.email, 0, -1, false, { "Error: Could not fetch email list to resolve ID." })
                     end
-                end)
-            end
+                    return
+                end
+
+                local ok, envelopes = pcall(vim.fn.json_decode, json_str)
+                
+                if not ok or type(envelopes) ~= "table" or not envelopes[current_row] then
+                    if vim.api.nvim_buf_is_valid(state.email) then
+                        vim.api.nvim_buf_set_lines(state.email, 0, -1, false, { "Error: Failed to parse JSON or row is out of bounds." })
+                    end
+                end
+
+                local email_id = envelopes[current_row].id
+                if not email_id then return end
+
+                vim.fn.jobstart({"himalaya", "message", "read", tostring(email_id)}, {
+                    stdout_buffered = true,
+                    on_stdout = function(_, read_data)
+                        if read_data and #read_data > 0 then
+                            vim.schedule(function()
+                                if vim.api.nvim_buf_is_valid(state.email) then
+                                    vim.api.nvim_buf_set_lines(state.email, 0, -1, false, read_data)
+                                end
+                            end)
+                        end
+                    end,
+                })
+            end)
         end
     })
 end
