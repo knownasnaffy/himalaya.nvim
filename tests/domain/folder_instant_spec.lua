@@ -57,4 +57,29 @@ describe("Folder Instant Active Item Switch", function()
 			cli_callback(nil, sample_folders)
 		end
 	end)
+
+	it("normalizes default INBOX to match Inbox in sidebar and advances correctly via next()", function()
+		local custom_folders = {
+			{ name = "Archive", unread = 0 },
+			{ name = "Drafts", unread = 0 },
+			{ name = "Inbox", unread = 5 },
+			{ name = "Sent", unread = 0 },
+		}
+		cache.set_folders(custom_folders)
+		state.current_folder = "INBOX"
+
+		local folder_list = require("himalaya.ui.folder_list")
+		folder_list.render(sidebar_popup.bufnr, custom_folders)
+
+		-- State should be normalized to "Inbox"
+		assert.equals("Inbox", state.current_folder)
+
+		-- Cursor in sidebar must be on line 3 ("Inbox"), not line 1 ("Archive")
+		local cursor = vim.api.nvim_win_get_cursor(sidebar_popup.winid)
+		assert.equals(3, cursor[1], "Cursor should be on line 3 for Inbox")
+
+		-- Calling next() should advance from Inbox (line 3) to Sent (line 4)
+		folder.next(true, true)
+		assert.equals("Sent", state.current_folder, "Next folder after Inbox should be Sent, not Archive")
+	end)
 end)

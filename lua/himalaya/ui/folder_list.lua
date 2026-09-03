@@ -5,6 +5,16 @@ local config = require("himalaya.config")
 
 local M = {}
 
+local function is_same_folder(name1, name2)
+	if not name1 or not name2 then
+		return false
+	end
+	if name1 == name2 then
+		return true
+	end
+	return name1:lower() == name2:lower()
+end
+
 -- Recursively render folder tree
 local function render_tree(items, lines, depth, active_line)
 	depth = depth or 0
@@ -18,7 +28,8 @@ local function render_tree(items, lines, depth, active_line)
 		table.insert(lines, line)
 		local current_line = #lines
 
-		if item.name and item.name == state.current_folder then
+		local is_active = is_same_folder(item.name, state.current_folder)
+		if is_active then
 			active_line.line = current_line
 		end
 
@@ -31,7 +42,6 @@ local function render_tree(items, lines, depth, active_line)
 		local display = (icon ~= "") and (icon .. " " .. item.displayName) or item.displayName
 		local content = " " .. indent .. display
 
-		local is_active = item.name and item.name == state.current_folder
 		-- Use different highlight for active/inactive folders and non-selectable nodes
 		local highlight = not item.name and "HimalayaFolderDisabled"
 			or (is_active and "HimalayaFolderActive" or "HimalayaFolder")
@@ -67,6 +77,14 @@ function M.render(bufnr, folders)
 
 	-- Store flat list of accessible folders in state
 	state.folder_list = folder_utils.get_accessible_folders(tree)
+
+	-- Normalize state.current_folder to match the actual folder casing in state.folder_list
+	for _, fname in ipairs(state.folder_list) do
+		if is_same_folder(fname, state.current_folder) then
+			state.current_folder = fname
+			break
+		end
+	end
 
 	-- Clear buffer first
 	vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, {})

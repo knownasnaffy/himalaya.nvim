@@ -61,14 +61,32 @@ local function reload_folders(silent)
 	end)
 end
 
+local function is_same_folder(name1, name2)
+	if not name1 or not name2 then
+		return false
+	end
+	if name1 == name2 then
+		return true
+	end
+	return name1:lower() == name2:lower()
+end
+
 -- Switch to a folder by name
 function M.switch_to(folder_name)
-	if not vim.tbl_contains(state.folder_list, folder_name) then
+	local target = nil
+	for _, name in ipairs(state.folder_list) do
+		if is_same_folder(name, folder_name) then
+			target = name
+			break
+		end
+	end
+
+	if not target then
 		vim.notify("Folder not found: " .. folder_name, vim.log.levels.ERROR)
 		return
 	end
 
-	state.current_folder = folder_name
+	state.current_folder = target
 	local cache = require("himalaya.cache")
 	local cached = cache.get_folders()
 	if cached and state.sidebar then
@@ -88,7 +106,7 @@ function M.next(silent, skip_reload)
 
 	local current_idx = nil
 	for i, name in ipairs(state.folder_list) do
-		if name == state.current_folder then
+		if is_same_folder(name, state.current_folder) then
 			current_idx = i
 			break
 		end
@@ -144,7 +162,7 @@ function M.previous(silent, skip_reload)
 
 	local current_idx = nil
 	for i, name in ipairs(state.folder_list) do
-		if name == state.current_folder then
+		if is_same_folder(name, state.current_folder) then
 			current_idx = i
 			break
 		end
