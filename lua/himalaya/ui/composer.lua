@@ -6,6 +6,8 @@ local M = {}
 
 M.layout = nil
 M.popups = {}
+M.previous_win = nil
+M.is_closing = false
 
 function M.send_message(data, callback)
 	data = data or {}
@@ -34,11 +36,43 @@ function M.save_draft(data, callback)
 end
 
 function M.close()
+	if M.is_closing then
+		return
+	end
+	M.is_closing = true
+
+	pcall(vim.api.nvim_del_augroup_by_name, "HimalayaComposerClose")
+
 	if M.layout then
-		M.layout:unmount()
+		pcall(function()
+			M.layout:unmount()
+		end)
 		M.layout = nil
 		M.popups = {}
 	end
+
+	local target_win = M.previous_win
+	M.previous_win = nil
+
+	local function restore_focus()
+		if target_win and vim.api.nvim_win_is_valid(target_win) then
+			pcall(vim.api.nvim_set_current_win, target_win)
+			return
+		end
+
+		if state.email_visible and state.email_popup and state.email_popup.winid and vim.api.nvim_win_is_valid(state.email_popup.winid) then
+			pcall(vim.api.nvim_set_current_win, state.email_popup.winid)
+		elseif state.main_popup and state.main_popup.winid and vim.api.nvim_win_is_valid(state.main_popup.winid) then
+			pcall(vim.api.nvim_set_current_win, state.main_popup.winid)
+		elseif state.sidebar_popup and state.sidebar_popup.winid and vim.api.nvim_win_is_valid(state.sidebar_popup.winid) then
+			pcall(vim.api.nvim_set_current_win, state.sidebar_popup.winid)
+		end
+	end
+
+	restore_focus()
+	vim.schedule(restore_focus)
+
+	M.is_closing = false
 end
 
 function M.open(opts)
@@ -52,8 +86,23 @@ function M.open(opts)
 		return
 	end
 
+	local current_win = vim.api.nvim_get_current_win()
+	local is_composer_win = false
+	if M.popups then
+		for _, p in pairs(M.popups) do
+			if p and p.winid == current_win then
+				is_composer_win = true
+				break
+			end
+		end
+	end
+
 	-- Close existing composer if open
 	M.close()
+
+	if not is_composer_win then
+		M.previous_win = current_win
+	end
 
 	local border_style = config.get_border_style()
 
@@ -248,12 +297,48 @@ function M.open(opts)
 		vim.keymap.set("n", "<Esc>", function()
 			M.close()
 		end, { buffer = popup.bufnr, nowait = true })
+
+		-- Intercept :q, :q!, :quit, and :close in command line to close composer cleanly
+		vim.keymap.set("c", "<CR>", function()
+			if vim.fn.getcmdtype() == ":" then
+				local cmd = vim.fn.getcmdline():match("^%s*(.-)%s*$")
+				if cmd == "q" or cmd == "q!" or cmd == "quit" or cmd == "close" then
+					return "<C-u>lua require('himalaya.ui.composer').close()<CR>"
+				end
+			end
+			return "<CR>"
+		end, { expr = true, buffer = popup.bufnr })
+	end
+
+	-- Track popup window close events to ensure clean composer teardown
+	local win_ids = {}
+	for _, popup in ipairs(order) do
+		if popup.winid then
+			table.insert(win_ids, tostring(popup.winid))
+		end
+	end
+
+	if #win_ids > 0 then
+		local group = vim.api.nvim_create_augroup("HimalayaComposerClose", { clear = true })
+		vim.api.nvim_create_autocmd("WinClosed", {
+			group = group,
+			pattern = table.concat(win_ids, ","),
+			callback = function()
+				if not M.is_closing then
+					M.close()
+				end
+			end,
+			once = true,
+		})
 	end
 
 	-- Focus initial window
+	if to_popup.winid and vim.api.nvim_win_is_valid(to_popup.winid) then
+		pcall(vim.api.nvim_set_current_win, to_popup.winid)
+	end
 	vim.schedule(function()
 		if to_popup.winid and vim.api.nvim_win_is_valid(to_popup.winid) then
-			vim.api.nvim_set_current_win(to_popup.winid)
+			pcall(vim.api.nvim_set_current_win, to_popup.winid)
 		end
 	end)
 end

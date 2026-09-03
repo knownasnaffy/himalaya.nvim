@@ -44,8 +44,27 @@ function NuiPopup.new(opts)
 	}, NuiPopup)
 end
 
-function NuiPopup:mount() end
-function NuiPopup:unmount() end
+function NuiPopup:mount()
+	if not self.winid or self.winid == 1000 or not vim.api.nvim_win_is_valid(self.winid) then
+		local ok, win = pcall(vim.api.nvim_open_win, self.bufnr, false, {
+			relative = "editor",
+			row = 1,
+			col = 1,
+			width = 10,
+			height = 5,
+		})
+		if ok then
+			self.winid = win
+		end
+	end
+end
+
+function NuiPopup:unmount()
+	if self.winid and self.winid ~= 1000 and vim.api.nvim_win_is_valid(self.winid) then
+		pcall(vim.api.nvim_win_close, self.winid, true)
+	end
+end
+
 function NuiPopup:update_layout() end
 
 package.preload["nui.popup"] = function()
@@ -61,8 +80,48 @@ function NuiLayout.new(opts, box)
 	return setmetatable({ opts = opts, box = box }, NuiLayout)
 end
 
-function NuiLayout:mount() end
-function NuiLayout:unmount() end
+local function mount_box(b)
+	if not b then return end
+	if b.mount then
+		b:mount()
+	elseif b.box then
+		if type(b.box) == "table" then
+			if b.box.mount then
+				b.box:mount()
+			else
+				for _, child in ipairs(b.box) do
+					mount_box(child)
+				end
+			end
+		end
+	end
+end
+
+local function unmount_box(b)
+	if not b then return end
+	if b.unmount then
+		b:unmount()
+	elseif b.box then
+		if type(b.box) == "table" then
+			if b.box.unmount then
+				b.box:unmount()
+			else
+				for _, child in ipairs(b.box) do
+					unmount_box(child)
+				end
+			end
+		end
+	end
+end
+
+function NuiLayout:mount()
+	mount_box(self.box)
+end
+
+function NuiLayout:unmount()
+	unmount_box(self.box)
+end
+
 function NuiLayout:update() end
 
 local LayoutModule = {}
