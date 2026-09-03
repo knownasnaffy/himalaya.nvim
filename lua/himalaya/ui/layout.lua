@@ -178,7 +178,7 @@ function M.create()
 		folder_list.render(sidebar.bufnr, cached_folders)
 	else
 		M.show_spinner("Loading")
-		folder.list({}, function(err, data)
+		folder.list({ account = state.current_account }, function(err, data)
 			if err then
 				M.hide_spinner()
 				vim.notify("Failed to load folders: " .. err, vim.log.levels.ERROR)
@@ -198,7 +198,12 @@ function M.create()
 		M.update_page_footer()
 	else
 		M.show_spinner("Loading")
-		envelope.list({ page_size = main_height }, function(err, data)
+		envelope.list({
+			mailbox = state.current_folder,
+			page = state.current_page,
+			page_size = main_height,
+			account = state.current_account,
+		}, function(err, data)
 			if err then
 				M.hide_spinner()
 				vim.notify("Failed to load emails: " .. err, vim.log.levels.ERROR)

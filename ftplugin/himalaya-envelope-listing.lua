@@ -6,8 +6,10 @@ local folder_mod = require("himalaya.folder")
 local page_mod = require("himalaya.page")
 local email_mod = require("himalaya.email")
 local himalaya = require("himalaya")
+local actions_mod = require("himalaya.actions")
+local account_mod = require("himalaya.account")
 
--- Define default actions
+-- Define actions
 local actions = {
 	close = function()
 		himalaya.close()
@@ -17,14 +19,12 @@ local actions = {
 		local count = vim.v.count1
 		local start_folder = require("himalaya.state").current_folder
 
-		for i = 1, count do
+		for _ = 1, count do
 			folder_mod.next(true, true)
 		end
 
-		-- Check if we actually moved
 		local end_folder = require("himalaya.state").current_folder
 		if start_folder ~= end_folder then
-			-- Force reload after all navigation
 			folder_mod.reload()
 		end
 	end,
@@ -33,20 +33,22 @@ local actions = {
 		local count = vim.v.count1
 		local start_folder = require("himalaya.state").current_folder
 
-		for i = 1, count do
+		for _ = 1, count do
 			folder_mod.previous(true, true)
 		end
 
-		-- Check if we actually moved
 		local end_folder = require("himalaya.state").current_folder
 		if start_folder ~= end_folder then
-			-- Force reload after all navigation
 			folder_mod.reload()
 		end
 	end,
 
 	folder_picker = function()
 		folder_mod.picker()
+	end,
+
+	account_picker = function()
+		account_mod.select()
 	end,
 
 	reload = function()
@@ -63,6 +65,46 @@ local actions = {
 
 	open_email = function()
 		email_mod.open()
+	end,
+
+	compose = function()
+		actions_mod.compose()
+	end,
+
+	reply = function()
+		actions_mod.reply()
+	end,
+
+	forward = function()
+		actions_mod.forward()
+	end,
+
+	delete = function()
+		actions_mod.delete()
+	end,
+
+	move = function()
+		actions_mod.move()
+	end,
+
+	copy = function()
+		actions_mod.copy()
+	end,
+
+	download_attachments = function()
+		actions_mod.download_attachments()
+	end,
+
+	flag_add = function()
+		actions_mod.flag_add()
+	end,
+
+	flag_remove = function()
+		actions_mod.flag_remove()
+	end,
+
+	search = function()
+		actions_mod.search()
 	end,
 }
 

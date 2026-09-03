@@ -1,5 +1,5 @@
 local NuiLine = require("nui.line")
-local folder_utils = require("himalaya.utils.folder")
+local folder_utils = require("himalaya.domain.mailbox")
 local state = require("himalaya.state")
 local config = require("himalaya.config")
 
@@ -28,13 +28,17 @@ local function render_tree(items, lines, depth, active_line)
 			icon = (#item.children > 0) and "\u{e5fe}" or "\u{e5ff}"
 		end
 
-		-- Add space after icon if present, and horizontal padding
 		local display = (icon ~= "") and (icon .. " " .. item.displayName) or item.displayName
 		local content = " " .. indent .. display
 
 		-- Use different highlight for folders without name (non-selectable)
 		local highlight = item.name and "HimalayaFolder" or "HimalayaFolderDisabled"
 		line:append(content, highlight)
+
+		-- Render unread badge if present
+		if item.unread and item.unread > 0 then
+			line:append(" (" .. item.unread .. ")", "HimalayaUnread")
+		end
 
 		-- Render children recursively
 		if #item.children > 0 then
@@ -70,7 +74,7 @@ function M.render(bufnr, folders)
 	if active_line.line > 0 then
 		local wins = vim.fn.win_findbuf(bufnr)
 		for _, win in ipairs(wins) do
-			vim.api.nvim_win_set_cursor(win, { active_line.line, 0 })
+			pcall(vim.api.nvim_win_set_cursor, win, { active_line.line, 0 })
 		end
 	end
 

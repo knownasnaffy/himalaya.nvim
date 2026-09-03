@@ -53,7 +53,7 @@ function M.create()
 	if cached_folders then
 		folder_list.render(sidebar_buf, cached_folders)
 	else
-		folder.list({}, function(err, data)
+		folder.list({ account = state.current_account }, function(err, data)
 			if err then
 				vim.notify("Failed to load folders: " .. err, vim.log.levels.ERROR)
 				return
@@ -68,7 +68,12 @@ function M.create()
 	if cached_envelopes then
 		envelope_list.render(main_buf, cached_envelopes)
 	else
-		envelope.list({ page_size = main_height }, function(err, data)
+		envelope.list({
+			mailbox = state.current_folder,
+			page = state.current_page,
+			page_size = main_height,
+			account = state.current_account,
+		}, function(err, data)
 			if err then
 				vim.notify("Failed to load emails: " .. err, vim.log.levels.ERROR)
 				return

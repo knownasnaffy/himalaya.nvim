@@ -1,0 +1,106 @@
+*himalaya.txt*         Neovim interface for Himalaya CLI v2
+
+Author: knownasnaffy
+License: MIT
+
+==============================================================================
+CONTENTS                                                    *himalaya-contents*
+
+    1. Introduction ................................ |himalaya-intro|
+    2. Requirements ................................ |himalaya-requirements|
+    3. Commands .................................... |himalaya-commands|
+    4. Keybindings ................................. |himalaya-keybindings|
+    5. Configuration ............................... |himalaya-config|
+
+==============================================================================
+1. INTRODUCTION                                               *himalaya-intro*
+
+himalaya.nvim is a modern Neovim client for the Himalaya CLI email tool (v2.1+).
+It provides mailbox tree browsing, envelope listing with pagination and search,
+message reading with automatic seen flags, and a multi-window floating composer.
+
+==============================================================================
+2. REQUIREMENTS                                        *himalaya-requirements*
+
+- Neovim >= 0.8
+- himalaya CLI v2.0+ (https://github.com/pimalaya/himalaya)
+- nui.nvim (https://github.com/MunifTanjim/nui.nvim)
+
+==============================================================================
+3. COMMANDS                                                 *himalaya-commands*
+
+:Himalaya [account]
+    Open the Himalaya email interface. If [account] is given, switches to that
+    account on open.
+
+:HimalayaAccounts
+    Open account picker using vim.ui.select.
+
+:HimalayaAccount {name}
+    Switch active account directly to {name}.
+
+:HimalayaMailboxes
+    Open mailbox picker using vim.ui.select.
+
+:HimalayaMailbox {name|next|previous}
+    Switch to {name} mailbox or step to next/previous.
+
+:HimalayaWrite
+    Open the floating multi-window composer.
+
+:HimalayaSearch
+    Prompt for a query and search envelopes in the active mailbox.
+
+==============================================================================
+4. KEYBINDINGS                                           *himalaya-keybindings*
+
+Email Listing (himalaya-envelope-listing):
+    <CR>          Open email in reader split below
+    gq            Close Himalaya
+    ]f / [f       Next / previous mailbox (supports count)
+    gF            Mailbox picker
+    gA            Account picker
+    R             Reload current mailbox
+    ]] / [[       Next / previous page
+    gw / c        Compose new email
+    gr / r        Reply to selected email
+    gf            Forward selected email
+    gD / d        Delete selected email
+    gM / m        Move email to mailbox
+    gC            Copy email to mailbox
+    ga            Download attachments
+    gFa / gFr     Add / remove flags (seen, flagged, etc.)
+    g/            Search envelopes
+
+Email Reading (himalaya-email):
+    gq / q        Close email reader pane
+    gr / r        Reply to email
+    gf            Forward email
+    gD / d        Delete email
+    gM / m        Move email
+    gC            Copy email
+    ga            Download attachments
+    gFa / gFr     Add / remove flags
+
+Composer:
+    <Tab>         Focus next field (To -> Cc -> Subject -> Body)
+    <S-Tab>       Focus previous field
+    <C-s>         Send email
+    <C-d>         Save draft to Drafts
+    <Esc>         Cancel and close composer
+
+==============================================================================
+5. CONFIGURATION                                              *himalaya-config*
+
+Setup example:
+>lua
+    require("himalaya").setup({
+        sidebar = { width = 30 },
+        split_ratio = 0.4,
+        wrap_folder_navigation = true,
+        icons_enabled = false,
+        custom_select = nil, -- optional function(items, opts, on_choice)
+    })
+<
+
+vim:tw=78:ts=8:ft=help:norl:

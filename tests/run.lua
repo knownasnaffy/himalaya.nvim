@@ -4,6 +4,7 @@ package.path = project_root .. "/lua/?.lua;" .. project_root .. "/lua/?/init.lua
 package.path = project_root .. "/tests/?.lua;" .. package.path
 
 local framework = require("framework")
+pcall(require, "mocks.nui")
 _G.describe = framework.describe
 _G.it = framework.it
 _G.assert = framework.assert

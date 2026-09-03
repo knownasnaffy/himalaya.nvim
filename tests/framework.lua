@@ -79,6 +79,14 @@ M.assert = {
 	end,
 }
 
+setmetatable(M.assert, {
+	__call = function(_, cond, msg)
+		if not cond then
+			error(msg or "assertion failed", 2)
+		end
+	end,
+})
+
 function M.describe(suite_name, fn)
 	local old_suite = current_suite
 	current_suite = old_suite == "" and suite_name or (old_suite .. " > " .. suite_name)
