@@ -32,7 +32,8 @@ function M.open()
 	state.selected_email_id = env.id
 
 	-- If already open, just focus it
-	if not state.email_visible then
+	local email_win_valid = state.email_popup.winid and vim.api.nvim_win_is_valid(state.email_popup.winid)
+	if not state.email_visible or not email_win_valid then
 		state.layout:update(Layout.Box({
 			Layout.Box(state.sidebar_popup, { size = config.config.sidebar.width }),
 			Layout.Box({
@@ -68,7 +69,11 @@ function M.open()
 		if err then
 			vim.api.nvim_buf_set_lines(state.email, 0, -1, false, { "Error loading email: " .. tostring(err) })
 		else
-			local lines = vim.split(content or "", "\n", { plain = true })
+			local clean_content = (content or ""):gsub("\r\n", "\n"):gsub("\r", "")
+			if clean_content:sub(-1) == "\n" then
+				clean_content = clean_content:sub(1, -2)
+			end
+			local lines = vim.split(clean_content, "\n", { plain = true })
 			vim.api.nvim_buf_set_lines(state.email, 0, -1, false, lines)
 
 			-- Mark seen in current envelopes cache and refresh row flag

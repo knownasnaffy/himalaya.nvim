@@ -156,7 +156,16 @@ function M.open(opts)
 	end
 
 	if opts.body then
-		local body_lines = type(opts.body) == "table" and opts.body or vim.split(opts.body, "\n", { plain = true })
+		local body_lines
+		if type(opts.body) == "table" then
+			body_lines = opts.body
+		else
+			local body_str = (opts.body or ""):gsub("\r\n", "\n"):gsub("\r", "")
+			if body_str:sub(-1) == "\n" then
+				body_str = body_str:sub(1, -2)
+			end
+			body_lines = vim.split(body_str, "\n", { plain = true })
+		end
 		vim.api.nvim_buf_set_lines(body_popup.bufnr, 0, -1, false, body_lines)
 	end
 
