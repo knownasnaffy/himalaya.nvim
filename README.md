@@ -207,3 +207,16 @@ nvim --headless -u NONE -l tests/run.lua
 
 - [himalaya-vim](https://github.com/pimalaya/himalaya-vim/) - The OG Vim plugin by [Clément DOUIN](https://github.com/soywod)
 - [himalaya-nvim](https://github.com/xav-ie/himalaya-nvim) - Another himalaya UI for neovim by [Xavier Ruiz](https://github.com/xav-ie)
+
+
+<details>
+<summary>
+<h2>More Screenshots</h2>
+</summary>
+<h3>Email List View</h3>
+<img width="1920" height="1080" alt="list" src="https://github.com/user-attachments/assets/336e86dc-691e-49a7-b41f-606cf154cd10" />
+<h3>Email Content View</h3>
+<img width="1920" height="1080" alt="content" src="https://github.com/user-attachments/assets/566167f1-eb4c-4eb4-a6da-59948285ca51" />
+<h3>Email Compose View</h3>
+<img width="1920" height="1080" alt="compose" src="https://github.com/user-attachments/assets/87948394-bdd2-4eaf-b30a-64833b988e71" />
+</details>
