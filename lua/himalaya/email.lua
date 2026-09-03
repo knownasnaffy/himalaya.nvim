@@ -46,9 +46,11 @@ function M.open()
 
 	-- Focus email window
 	vim.schedule(function()
-		local email_win = vim.fn.bufwinid(state.email)
-		if email_win ~= -1 then
-			vim.api.nvim_set_current_win(email_win)
+		if state.email and vim.api.nvim_buf_is_valid(state.email) then
+			local email_win = vim.fn.bufwinid(state.email)
+			if email_win ~= -1 then
+				vim.api.nvim_set_current_win(email_win)
+			end
 		end
 	end)
 
@@ -112,12 +114,14 @@ function M.close()
 
 	-- Realign main window content to fill the space
 	vim.schedule(function()
-		local main_win = vim.fn.bufwinid(state.main)
-		if main_win ~= -1 then
-			vim.api.nvim_set_current_win(main_win)
-			local cursor = vim.api.nvim_win_get_cursor(main_win)
-			vim.cmd("normal! gg")
-			vim.api.nvim_win_set_cursor(main_win, cursor)
+		if state.main and vim.api.nvim_buf_is_valid(state.main) then
+			local main_win = vim.fn.bufwinid(state.main)
+			if main_win ~= -1 then
+				vim.api.nvim_set_current_win(main_win)
+				local cursor = vim.api.nvim_win_get_cursor(main_win)
+				vim.cmd("normal! gg")
+				vim.api.nvim_win_set_cursor(main_win, cursor)
+			end
 		end
 	end)
 end
