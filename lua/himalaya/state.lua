@@ -34,6 +34,7 @@ function M.reset_ui()
 	M.sidebar_popup = nil
 	M.email_popup = nil
 	M.selected_email_id = nil
+	M.current_folder = nil
 end
 
 return M

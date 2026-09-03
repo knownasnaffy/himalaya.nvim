@@ -48,7 +48,7 @@ local function render_tree(items, lines, depth, active_line)
 		line:append(content, highlight)
 
 		-- Render unread badge if present
-		if item.unread and item.unread > 0 then
+		if item.unread and type(item.unread) == "number" and item.unread > 0 then
 			line:append(" (" .. item.unread .. ")", "HimalayaUnread")
 		end
 

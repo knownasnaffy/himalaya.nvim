@@ -1,6 +1,10 @@
 local M = {}
 
 function M.build_tree(mailboxes)
+	if mailboxes and type(mailboxes.mailboxes) == "table" then
+		mailboxes = mailboxes.mailboxes
+	end
+
 	local root = {}
 	local lookup = {}
 
@@ -36,8 +40,8 @@ function M.build_tree(mailboxes)
 				if is_last then
 					item.name = name
 					item.id = mailbox.id
-					item.total = mailbox.total
-					item.unread = mailbox.unread
+					item.total = (mailbox.total ~= vim.NIL and type(mailbox.total) == "number") and mailbox.total or nil
+					item.unread = (mailbox.unread ~= vim.NIL and type(mailbox.unread) == "number") and mailbox.unread or nil
 				end
 
 				table.insert(parent, item)
