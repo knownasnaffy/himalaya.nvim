@@ -90,6 +90,12 @@ function M.open()
 				table.insert(env.flags, { iana = "seen", raw = "\\Seen" })
 				local envelope_list = require("himalaya.ui.envelope_list")
 				envelope_list.render(state.main, state.current_envelopes)
+
+				local cache = require("himalaya.cache")
+				cache.adjust_folder_unread(state.current_folder, -1)
+				if state.sidebar and cache.get_folders() then
+					require("himalaya.ui.folder_list").render(state.sidebar, cache.get_folders())
+				end
 			end
 		end
 

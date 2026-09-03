@@ -51,13 +51,33 @@ function M.build_tree(mailboxes)
 				if is_last and not existing.name then
 					existing.name = name
 					existing.id = mailbox.id
-					existing.total = mailbox.total
-					existing.unread = mailbox.unread
+					existing.total = (mailbox.total ~= vim.NIL and type(mailbox.total) == "number") and mailbox.total or nil
+					existing.unread = (mailbox.unread ~= vim.NIL and type(mailbox.unread) == "number") and mailbox.unread or nil
 				end
 				parent = existing.children
 			end
 		end
 	end
+
+	-- Compute unread counts for parent/intermediate nodes if not explicitly set
+	local function compute_unreads(items)
+		local sum = 0
+		for _, item in ipairs(items) do
+			local child_unreads = 0
+			if #item.children > 0 then
+				child_unreads = compute_unreads(item.children)
+			end
+			if not item.unread and child_unreads > 0 then
+				item.unread = child_unreads
+			end
+			if item.unread and type(item.unread) == "number" then
+				sum = sum + item.unread
+			end
+		end
+		return sum
+	end
+
+	compute_unreads(root)
 
 	return root
 end

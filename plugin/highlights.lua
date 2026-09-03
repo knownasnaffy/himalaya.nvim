@@ -7,3 +7,4 @@ vim.api.nvim_set_hl(0, "HimalayaDate", { fg = vim.api.nvim_get_hl(0, { name = "C
 vim.api.nvim_set_hl(0, "HimalayaFolder", { fg = vim.api.nvim_get_hl(0, { name = "Directory" }).fg })
 vim.api.nvim_set_hl(0, "HimalayaFolderActive", { fg = vim.api.nvim_get_hl(0, { name = "Directory" }).fg, bold = true })
 vim.api.nvim_set_hl(0, "HimalayaFolderDisabled", { fg = vim.api.nvim_get_hl(0, { name = "Comment" }).fg })
+vim.api.nvim_set_hl(0, "HimalayaUnread", { fg = vim.api.nvim_get_hl(0, { name = "DiagnosticWarn" }).fg or vim.api.nvim_get_hl(0, { name = "WarningMsg" }).fg, bold = true })

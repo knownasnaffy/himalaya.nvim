@@ -30,6 +30,14 @@ function M.add_flag_to_envelope(env, flag, callback)
 		if not err then
 			table.insert(env.flags, { iana = flag, raw = "\\" .. flag:gsub("^%l", string.upper) })
 			refresh_listing()
+
+			if flag:lower() == "seen" then
+				local cache = require("himalaya.cache")
+				cache.adjust_folder_unread(state.current_folder, -1)
+				if state.sidebar and cache.get_folders() then
+					require("himalaya.ui.folder_list").render(state.sidebar, cache.get_folders())
+				end
+			end
 		end
 		if callback then
 			callback(err)
@@ -58,6 +66,14 @@ function M.remove_flag_from_envelope(env, flag, callback)
 			end
 			env.flags = new_flags
 			refresh_listing()
+
+			if flag:lower() == "seen" then
+				local cache = require("himalaya.cache")
+				cache.adjust_folder_unread(state.current_folder, 1)
+				if state.sidebar and cache.get_folders() then
+					require("himalaya.ui.folder_list").render(state.sidebar, cache.get_folders())
+				end
+			end
 		end
 		if callback then
 			callback(err)

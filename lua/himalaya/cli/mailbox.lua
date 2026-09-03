@@ -5,6 +5,9 @@ local M = {}
 function M.list(opts, callback)
 	opts = opts or {}
 	local args = { "mailbox", "list" }
+	if opts.counts ~= false then
+		table.insert(args, "--counts")
+	end
 
 	cli.run_json(args, function(err, data)
 		if err then
