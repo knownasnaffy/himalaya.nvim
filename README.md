@@ -39,6 +39,21 @@ Himalaya is a modern CLI tool for managing emails from the terminal. This plugin
 
 ## Installation
 
+### vim.pack.add
+
+```lua
+vim.pack.add({ 'https://github.com/MunifTanjim/nui.nvim', 'https://github.com/knownasnaffy/himalaya.nvim' })
+
+require('himalaya').setup({
+  icons_enabled = true,
+  wrap_folder_navigation = true,
+  -- Optional custom picker (e.g. telescope or fzf-lua override):
+  -- custom_select = function(items, opts, on_choice) ... end,
+})
+
+vim.keymap.set('n', '<Leader>oh', '<Cmd>Himalaya<CR>', { desc = 'Open Himalaya' })
+```
+
 ### lazy.nvim
 
 ```lua
@@ -50,8 +65,6 @@ Himalaya is a modern CLI tool for managing emails from the terminal. This plugin
   opts = {
     icons_enabled = false, -- set to true to use nerd font icons
     wrap_folder_navigation = true,
-    -- Optional custom picker (e.g. telescope or fzf-lua override):
-    -- custom_select = function(items, opts, on_choice) ... end,
   },
   keys = {
     { "<leader>oh", "<Cmd>Himalaya<CR>", desc = "[O]pen [H]imalaya" },
@@ -192,5 +205,5 @@ nvim --headless -u NONE -l tests/run.lua
 
 ## Hon'ble Mentions
 
-- [himalaya-vim](https://github.com/pimalaya/himalaya-vim/) - The OG Vim plugin
+- [himalaya-vim](https://github.com/pimalaya/himalaya-vim/) - The OG Vim plugin by [Clément DOUIN](https://github.com/soywod)
 - [himalaya-nvim](https://github.com/xav-ie/himalaya-nvim) - Another himalaya UI for neovim by [Xavier Ruiz](https://github.com/xav-ie)
