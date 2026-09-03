@@ -1,58 +1,72 @@
+local runner = require("himalaya.cli.runner")
+
 local M = {}
 
 M.executable = "himalaya"
+M.config_path = nil
 
-function M.run(args, callback)
-	local cmd = { "sh", "-c", "RUST_LOG=off " .. M.executable .. " " .. table.concat(args, " ") }
+function M.build_cmd(args, opts)
+	opts = opts or {}
+	local cmd = { M.executable }
 
-	local stdout = {}
-	local stderr = {}
+	if opts.json then
+		table.insert(cmd, "--json")
+	end
 
-	vim.fn.jobstart(cmd, {
-		stdout_buffered = true,
-		stderr_buffered = true,
-		on_stdout = function(_, data)
-			if data then
-				vim.list_extend(stdout, data)
-			end
-		end,
-		on_stderr = function(_, data)
-			if data then
-				vim.list_extend(stderr, data)
-			end
-		end,
-		on_exit = function(_, code)
-			if code == 0 then
-				local output = table.concat(stdout, "\n")
-				callback(nil, output)
-			else
-				local error = table.concat(stderr, "\n")
-				callback(error, nil)
-			end
-		end,
-	})
+	table.insert(cmd, "--log-level")
+	table.insert(cmd, "off")
+
+	local config = opts.config or M.config_path
+	if config and config ~= "" then
+		table.insert(cmd, "--config")
+		table.insert(cmd, config)
+	end
+
+	local account = opts.account
+	if account and account ~= "" then
+		table.insert(cmd, "--account")
+		table.insert(cmd, account)
+	end
+
+	if opts.backend and opts.backend ~= "" then
+		table.insert(cmd, "--backend")
+		table.insert(cmd, opts.backend)
+	end
+
+	for _, arg in ipairs(args) do
+		table.insert(cmd, arg)
+	end
+
+	return cmd
 end
 
-function M.run_json(args, callback)
+function M.run(args, callback, opts)
+	opts = opts or {}
+	local cmd = M.build_cmd(args, opts)
+	runner.run(cmd, callback, opts)
+end
+
+function M.run_json(args, callback, opts)
+	opts = opts or {}
+	opts.json = true
+
 	M.run(args, function(err, output)
 		if err then
 			callback(err, nil)
 			return
 		end
 
-		-- Handle empty output
-		if not output or output == "" then
+		if not output or output == "" or output:match("^%s*$") then
 			callback(nil, {})
 			return
 		end
 
 		local ok, data = pcall(vim.json.decode, output)
 		if not ok then
-			callback("Failed to parse JSON: " .. data, nil)
+			callback("Failed to parse JSON: " .. tostring(data) .. "\nOutput was: " .. output, nil)
 			return
 		end
 
-		-- Convert vim.NIL to nil recursively
 		local function clean_nil(obj)
 			if type(obj) == "table" then
 				for k, v in pairs(obj) do
@@ -68,7 +82,7 @@ function M.run_json(args, callback)
 
 		data = clean_nil(data)
 		callback(nil, data)
-	end)
+	end, opts)
 end
 
 return M
