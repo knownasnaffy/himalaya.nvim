@@ -17,4 +17,23 @@ M.spinner_timer = nil -- Timer for spinner animation
 M.is_open = false
 M.folder_list = {} -- Flat list of accessible folders/mailboxes
 
+function M.reset_ui()
+	if M.spinner_timer then
+		pcall(function()
+			M.spinner_timer:stop()
+		end)
+		M.spinner_timer = nil
+	end
+	M.is_open = false
+	M.layout = nil
+	M.sidebar = nil
+	M.main = nil
+	M.email = nil
+	M.email_visible = false
+	M.main_popup = nil
+	M.sidebar_popup = nil
+	M.email_popup = nil
+	M.selected_email_id = nil
+end
+
 return M

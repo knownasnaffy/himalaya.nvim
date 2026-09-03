@@ -74,6 +74,8 @@ function M.update_page_footer()
 end
 
 function M.create()
+	state.reset_ui()
+
 	local sidebar = Popup({
 		enter = false,
 		focusable = false,
@@ -151,13 +153,7 @@ function M.create()
 	vim.api.nvim_create_autocmd("WinClosed", {
 		pattern = tostring(sidebar.winid) .. "," .. tostring(main.winid),
 		callback = function()
-			if state.spinner_timer then
-				state.spinner_timer:stop()
-			end
-			state.is_open = false
-			state.layout = nil
-			state.sidebar = nil
-			state.main = nil
+			state.reset_ui()
 		end,
 		once = true,
 	})

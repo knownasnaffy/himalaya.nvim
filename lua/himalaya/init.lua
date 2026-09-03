@@ -22,9 +22,8 @@ function M.open()
 		-- Use fullscreen native split layout
 		require("himalaya.ui.fullscreen").create()
 	else
-		-- Use nui popup layout
-		local l = layout.create()
-		l:mount()
+		-- Use nui popup layout (layout.create already mounts)
+		layout.create()
 	end
 
 	state.is_open = true
@@ -33,11 +32,8 @@ end
 function M.close()
 	if state.layout then
 		state.layout:unmount()
-		state.layout = nil
-		state.sidebar = nil
-		state.main = nil
-		state.is_open = false
 	end
+	state.reset_ui()
 end
 
 return M

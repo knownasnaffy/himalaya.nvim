@@ -46,3 +46,14 @@ local actions = {
 
 -- Apply keymaps from config
 keymap_util.apply(bufnr, config.config.keymaps.email, actions)
+
+-- Intercept :q, :q!, :quit, and :close to close only the email pane and return to email listing
+vim.keymap.set("c", "<CR>", function()
+	if vim.fn.getcmdtype() == ":" then
+		local cmd = vim.fn.getcmdline():match("^%s*(.-)%s*$")
+		if cmd == "q" or cmd == "q!" or cmd == "quit" or cmd == "close" then
+			return "<C-u>lua require('himalaya.email').close()<CR>"
+		end
+	end
+	return "<CR>"
+end, { expr = true, buffer = bufnr })
