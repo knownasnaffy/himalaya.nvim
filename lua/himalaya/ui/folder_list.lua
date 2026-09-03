@@ -78,13 +78,34 @@ function M.render(bufnr, folders)
 	-- Store flat list of accessible folders in state
 	state.folder_list = folder_utils.get_accessible_folders(tree)
 
-	-- Normalize state.current_folder to match the actual folder casing in state.folder_list
-	for _, fname in ipairs(state.folder_list) do
-		if is_same_folder(fname, state.current_folder) then
-			state.current_folder = fname
-			break
+	-- Select active folder matching himalaya-tui:
+	-- 1. If state.current_folder is already set and exists, preserve it (with case normalization)
+	-- 2. Otherwise find inbox case-insensitively (position(|m| m.name.eq_ignore_ascii_case("inbox")))
+	-- 3. Otherwise fall back to first folder (unwrap_or(0))
+	local selected = nil
+	if state.current_folder then
+		for _, fname in ipairs(state.folder_list) do
+			if is_same_folder(fname, state.current_folder) then
+				selected = fname
+				break
+			end
 		end
 	end
+
+	if not selected then
+		for _, fname in ipairs(state.folder_list) do
+			if fname:lower() == "inbox" then
+				selected = fname
+				break
+			end
+		end
+	end
+
+	if not selected and #state.folder_list > 0 then
+		selected = state.folder_list[1]
+	end
+
+	state.current_folder = selected
 
 	-- Clear buffer first
 	vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, {})

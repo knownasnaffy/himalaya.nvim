@@ -82,4 +82,51 @@ describe("Folder Instant Active Item Switch", function()
 		folder.next(true, true)
 		assert.equals("Sent", state.current_folder, "Next folder after Inbox should be Sent, not Archive")
 	end)
+
+	it("discovers active folder dynamically like himalaya-tui when state.current_folder is nil", function()
+		local custom_folders = {
+			{ name = "Archive", unread = 0 },
+			{ name = "Drafts", unread = 0 },
+			{ name = "Inbox", unread = 5 },
+			{ name = "Sent", unread = 0 },
+		}
+		cache.set_folders(custom_folders)
+		state.current_folder = nil
+
+		local folder_list = require("himalaya.ui.folder_list")
+		folder_list.render(sidebar_popup.bufnr, custom_folders)
+
+		-- State should dynamically discover "Inbox"
+		assert.equals("Inbox", state.current_folder)
+
+		-- Cursor in sidebar must be on line 3 ("Inbox"), not line 1 ("Archive")
+		local cursor = vim.api.nvim_win_get_cursor(sidebar_popup.winid)
+		assert.equals(3, cursor[1], "Cursor should be on line 3 for Inbox")
+
+		-- Calling next() should advance from Inbox (line 3) to Sent (line 4)
+		folder.next(true, true)
+		assert.equals("Sent", state.current_folder, "Next folder after Inbox should be Sent, not Archive")
+	end)
+
+	it("falls back to first folder like himalaya-tui unwrap_or(0) when no inbox exists", function()
+		local custom_folders = {
+			{ name = "Archive", unread = 0 },
+			{ name = "Sent", unread = 0 },
+		}
+		cache.set_folders(custom_folders)
+		state.current_folder = nil
+
+		local folder_list = require("himalaya.ui.folder_list")
+		folder_list.render(sidebar_popup.bufnr, custom_folders)
+
+		-- State should fall back to first folder
+		assert.equals("Archive", state.current_folder)
+
+		local cursor = vim.api.nvim_win_get_cursor(sidebar_popup.winid)
+		assert.equals(1, cursor[1], "Cursor should be on line 1 for Archive")
+
+		-- Calling next() should advance from Archive (line 1) to Sent (line 2)
+		folder.next(true, true)
+		assert.equals("Sent", state.current_folder, "Next folder after Archive should be Sent")
+	end)
 end)

@@ -168,10 +168,44 @@ function M.create()
 
 	local cache = require("himalaya.cache")
 
-	-- Load folders (use cache if available)
+	local function load_envelopes()
+		local cached_envelopes = cache.get_envelopes(state.current_folder, state.current_page)
+		if cached_envelopes then
+			envelope_list.render(main.bufnr, cached_envelopes)
+			M.update_page_footer()
+			M.hide_spinner()
+		else
+			M.show_spinner("Loading emails")
+			envelope.list({
+				mailbox = state.current_folder,
+				page = state.current_page,
+				page_size = main_height,
+				account = state.current_account,
+			}, function(err, data)
+				if err then
+					M.hide_spinner()
+					vim.notify("Failed to load emails: " .. err, vim.log.levels.ERROR)
+					return
+				end
+
+				cache.set_envelopes(state.current_folder, state.current_page, data)
+				envelope_list.render(main.bufnr, data)
+				M.hide_spinner()
+				M.update_page_footer()
+			end)
+		end
+	end
+
+	local function on_folders_loaded(data)
+		cache.set_folders(data)
+		folder_list.render(sidebar.bufnr, data)
+		load_envelopes()
+	end
+
+	-- Load folders first to resolve active mailbox dynamically (matching himalaya-tui)
 	local cached_folders = cache.get_folders()
 	if cached_folders then
-		folder_list.render(sidebar.bufnr, cached_folders)
+		on_folders_loaded(cached_folders)
 	else
 		M.show_spinner("Loading")
 		folder.list({ account = state.current_account }, function(err, data)
@@ -180,36 +214,7 @@ function M.create()
 				vim.notify("Failed to load folders: " .. err, vim.log.levels.ERROR)
 				return
 			end
-
-			cache.set_folders(data)
-			folder_list.render(sidebar.bufnr, data)
-			M.hide_spinner()
-		end)
-	end
-
-	-- Load envelopes (use cache if available)
-	local cached_envelopes = cache.get_envelopes(state.current_folder, state.current_page)
-	if cached_envelopes then
-		envelope_list.render(main.bufnr, cached_envelopes)
-		M.update_page_footer()
-	else
-		M.show_spinner("Loading")
-		envelope.list({
-			mailbox = state.current_folder,
-			page = state.current_page,
-			page_size = main_height,
-			account = state.current_account,
-		}, function(err, data)
-			if err then
-				M.hide_spinner()
-				vim.notify("Failed to load emails: " .. err, vim.log.levels.ERROR)
-				return
-			end
-
-			cache.set_envelopes(state.current_folder, state.current_page, data)
-			envelope_list.render(main.bufnr, data)
-			M.hide_spinner()
-			M.update_page_footer()
+			on_folders_loaded(data)
 		end)
 	end
 

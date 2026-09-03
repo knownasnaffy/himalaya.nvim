@@ -48,38 +48,44 @@ function M.create()
 
 	local cache = require("himalaya.cache")
 
-	-- Load folders (use cache if available)
+	local function load_envelopes()
+		local cached_envelopes = cache.get_envelopes(state.current_folder, state.current_page)
+		if cached_envelopes then
+			envelope_list.render(main_buf, cached_envelopes)
+		else
+			envelope.list({
+				mailbox = state.current_folder,
+				page = state.current_page,
+				page_size = main_height,
+				account = state.current_account,
+			}, function(err, data)
+				if err then
+					vim.notify("Failed to load emails: " .. err, vim.log.levels.ERROR)
+					return
+				end
+				cache.set_envelopes(state.current_folder, state.current_page, data)
+				envelope_list.render(main_buf, data)
+			end)
+		end
+	end
+
+	local function on_folders_loaded(data)
+		cache.set_folders(data)
+		folder_list.render(sidebar_buf, data)
+		load_envelopes()
+	end
+
+	-- Load folders first to resolve active mailbox dynamically (matching himalaya-tui)
 	local cached_folders = cache.get_folders()
 	if cached_folders then
-		folder_list.render(sidebar_buf, cached_folders)
+		on_folders_loaded(cached_folders)
 	else
 		folder.list({ account = state.current_account }, function(err, data)
 			if err then
 				vim.notify("Failed to load folders: " .. err, vim.log.levels.ERROR)
 				return
 			end
-			cache.set_folders(data)
-			folder_list.render(sidebar_buf, data)
-		end)
-	end
-
-	-- Load envelopes (use cache if available)
-	local cached_envelopes = cache.get_envelopes(state.current_folder, state.current_page)
-	if cached_envelopes then
-		envelope_list.render(main_buf, cached_envelopes)
-	else
-		envelope.list({
-			mailbox = state.current_folder,
-			page = state.current_page,
-			page_size = main_height,
-			account = state.current_account,
-		}, function(err, data)
-			if err then
-				vim.notify("Failed to load emails: " .. err, vim.log.levels.ERROR)
-				return
-			end
-			cache.set_envelopes(state.current_folder, state.current_page, data)
-			envelope_list.render(main_buf, data)
+			on_folders_loaded(data)
 		end)
 	end
 end

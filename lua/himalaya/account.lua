@@ -12,7 +12,7 @@ end
 
 function M.switch_to(account_name)
 	state.current_account = account_name
-	state.current_folder = "INBOX"
+	state.current_folder = nil
 	state.current_page = 1
 	vim.notify("Switched to account: " .. account_name, vim.log.levels.INFO)
 	folder.reload()

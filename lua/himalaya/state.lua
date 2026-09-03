@@ -1,7 +1,7 @@
 local M = {}
 
 M.current_account = ""
-M.current_folder = "INBOX"
+M.current_folder = nil -- Discovered dynamically from mailboxes
 M.current_page = 1
 M.current_envelope_count = 0 -- Number of emails in current view
 M.current_envelopes = {} -- Envelopes currently displayed in main view
