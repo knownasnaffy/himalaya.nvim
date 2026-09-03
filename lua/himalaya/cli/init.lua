@@ -56,15 +56,21 @@ function M.run_json(args, callback, opts)
 			return
 		end
 
-		if not output or output == "" or output:match("^%s*$") then
+		if not output or output == "" or (type(output) == "string" and output:match("^%s*$")) then
 			callback(nil, {})
 			return
 		end
 
-		local ok, data = pcall(vim.json.decode, output)
-		if not ok then
-			callback("Failed to parse JSON: " .. tostring(data) .. "\nOutput was: " .. output, nil)
-			return
+		local data
+		if type(output) == "table" then
+			data = output
+		else
+			local ok, res = pcall(vim.json.decode, output)
+			if not ok then
+				callback("Failed to parse JSON: " .. tostring(res) .. "\nOutput was: " .. tostring(output), nil)
+				return
+			end
+			data = res
 		end
 
 		local function clean_nil(obj)

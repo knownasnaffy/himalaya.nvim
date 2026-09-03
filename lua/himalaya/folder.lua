@@ -23,7 +23,7 @@ local function reload_emails(silent)
 
 	local cache = require("himalaya.cache")
 	local height = vim.api.nvim_win_get_height(vim.api.nvim_get_current_win())
-	envelope.list({ folder = state.current_folder, page_size = height }, function(err, data)
+	envelope.list({ folder = state.current_folder, page_size = height, account = state.current_account }, function(err, data)
 		if err then
 			layout.hide_spinner()
 			vim.notify("Failed to load emails: " .. err, vim.log.levels.ERROR)
@@ -42,7 +42,13 @@ local function reload_folders(silent)
 		return
 	end
 
-	folder_cli.list({}, function(err, data)
+	local cache = require("himalaya.cache")
+	local cached = cache.get_folders()
+	if cached then
+		folder_list.render(state.sidebar, cached)
+	end
+
+	folder_cli.list({ account = state.current_account }, function(err, data)
 		if err then
 			if not silent then
 				vim.notify("Failed to reload folders: " .. err, vim.log.levels.ERROR)
@@ -50,6 +56,7 @@ local function reload_folders(silent)
 			return
 		end
 
+		cache.set_folders(data)
 		folder_list.render(state.sidebar, data)
 	end)
 end
@@ -62,6 +69,12 @@ function M.switch_to(folder_name)
 	end
 
 	state.current_folder = folder_name
+	local cache = require("himalaya.cache")
+	local cached = cache.get_folders()
+	if cached and state.sidebar then
+		folder_list.render(state.sidebar, cached)
+	end
+
 	layout.show_spinner("Switching folder")
 	reload_folders(true) -- Silent folder reload
 	reload_emails(true) -- Silent email reload (spinner already shown)
@@ -100,6 +113,14 @@ function M.next(silent, skip_reload)
 		if next_idx ~= current_idx then
 			state.current_folder = state.folder_list[next_idx]
 			changed = true
+		end
+	end
+
+	if changed then
+		local cache = require("himalaya.cache")
+		local cached = cache.get_folders()
+		if cached and state.sidebar then
+			folder_list.render(state.sidebar, cached)
 		end
 	end
 
@@ -148,6 +169,14 @@ function M.previous(silent, skip_reload)
 		if prev_idx ~= current_idx then
 			state.current_folder = state.folder_list[prev_idx]
 			changed = true
+		end
+	end
+
+	if changed then
+		local cache = require("himalaya.cache")
+		local cached = cache.get_folders()
+		if cached and state.sidebar then
+			folder_list.render(state.sidebar, cached)
 		end
 	end
 

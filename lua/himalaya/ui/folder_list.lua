@@ -31,8 +31,10 @@ local function render_tree(items, lines, depth, active_line)
 		local display = (icon ~= "") and (icon .. " " .. item.displayName) or item.displayName
 		local content = " " .. indent .. display
 
-		-- Use different highlight for folders without name (non-selectable)
-		local highlight = item.name and "HimalayaFolder" or "HimalayaFolderDisabled"
+		local is_active = item.name and item.name == state.current_folder
+		-- Use different highlight for active/inactive folders and non-selectable nodes
+		local highlight = not item.name and "HimalayaFolderDisabled"
+			or (is_active and "HimalayaFolderActive" or "HimalayaFolder")
 		line:append(content, highlight)
 
 		-- Render unread badge if present
@@ -52,6 +54,13 @@ end
 function M.render(bufnr, folders)
 	vim.bo[bufnr].modifiable = true
 	vim.bo[bufnr].filetype = "himalaya-folder-listing"
+
+	if folders then
+		local cache = require("himalaya.cache")
+		if not cache.get_folders() then
+			cache.set_folders(folders)
+		end
+	end
 
 	-- Parse folders into tree structure
 	local tree = folder_utils.parse_folders(folders)
