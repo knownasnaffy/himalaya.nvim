@@ -189,3 +189,8 @@ Zero-dependency headless test suite:
 ```bash
 nvim --headless -u NONE -l tests/run.lua
 ```
+
+## Hon'ble Mentions
+
+- [himalaya-vim](https://github.com/pimalaya/himalaya-vim/) - The OG Vim plugin
+- [himalaya-nvim](https://github.com/xav-ie/himalaya-nvim) - Another himalaya UI for neovim by [Xavier Ruiz](https://github.com/xav-ie)
