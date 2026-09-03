@@ -3,34 +3,28 @@
 ## Command
 
 ```bash
-himalaya account list --output json
+himalaya account list --json [OPTIONS]
 ```
 
-## Output Format
+## Output Format (CLI v2.1.0+)
 
 ```json
-[
-  {
-    "name": "main",
-    "backend": "IMAP, SMTP",
-    "default": true
-  },
-  {
-    "name": "pro",
-    "backend": "IMAP, SMTP",
-    "default": false
-  }
-]
+{
+  "accounts": [
+    {
+      "name": "gmail",
+      "default": true,
+      "backends": [
+        "imap",
+        "smtp"
+      ]
+    }
+  ]
+}
 ```
 
 ## Fields
 
 - `name` (string): Account identifier
-- `backend` (string): Backend type(s) used
 - `default` (boolean): Whether this is the default account
-
-## Usage
-
-- Get list of all configured accounts
-- Identify default account by `"default": true`
-- Use account name for `--account` flag in other commands
+- `backends` (array of strings): Backend protocol names (e.g. `["imap", "smtp"]`)

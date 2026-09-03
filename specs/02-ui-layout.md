@@ -110,11 +110,37 @@ Alice
   - `r`: reply
   - `d`: delete
 
+### Email Composer Component (Floating Popup)
+
+```
+┌────────────────────────────────────────────────────────┐
+│ Compose Email                                      [q] │
+├───────────────────────────┬────────────────────────────┤
+│ To: user@example.com      │ Cc: copy@example.com       │
+├───────────────────────────┴────────────────────────────┤
+│ Subject: Project status                                │
+├────────────────────────────────────────────────────────┤
+│ Body:                                                  │
+│                                                        │
+│ Hello,                                                 │
+│                                                        │
+│ ...                                                    │
+│                                                        │
+├────────────────────────────────────────────────────────┤
+│ [<C-s>] Send    [<C-d>] Save Draft    [<Esc>] Cancel   │
+└────────────────────────────────────────────────────────┘
+```
+
+- Separate floating popup matching main layout dimensions (90% width, 90% height) rendered on top of the email list.
+- Top row columns for short headers:
+  - Row 1: `To` (half width) | `Cc` (half width)
+  - Row 2: `Subject` (full width)
+- Remaining rows: full-width, full-height buffer for message body.
+- Bottom footer: action hints (`<C-s>` Send, `<C-d>` Save draft, `<Esc>` Cancel).
+
 ## Layout Implementation Notes
 
-- Use `nui.Layout` for main structure
-- Use `nui.Split` for horizontal division
-- Use `nui.Tree` for sidebar folders
-- Use custom buffer rendering for list/viewer
-- All components share same layout instance
-- Layout persists across buffer changes
+- Use `nui.Layout` and `nui.Popup` for window management.
+- Keep Composer popup as a separate layout instance from the main email explorer to isolate state.
+- Use `vim.ui.select` for pickers (folder selection, account switching).
+

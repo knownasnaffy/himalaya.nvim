@@ -3,62 +3,62 @@
 ## Command
 
 ```bash
-RUST_LOG=off himalaya envelope list --output json [OPTIONS]
+himalaya envelope list --json [OPTIONS]
 ```
 
 ## Options
 
-- `--folder <name>`: Folder to list from (default: INBOX)
-- `--account <name>`: Account to use (default: default account)
-- `--page-size <n>`: Number of envelopes per page
-- `--page <n>`: Page number (1-indexed)
+- `-m, --mailbox <NAME>`: Target mailbox (default: inbox)
+- `-a, --account <NAME>`: Target account
+- `-p, --page <N>`: Page number (1-indexed, default: 1)
+- `-s, --page-size <N>`: Max envelopes per page
+- `--has-attachment`: Populate attachment status
 
-## Output Format
+## Output Schema (CLI v2.1.0+)
 
 ```json
-[
-  {
-    "id": "13230",
-    "flags": ["Seen"],
-    "subject": "Email subject",
-    "from": {
-      "name": "Sender Name",
-      "addr": "sender@example.com"
-    },
-    "to": {
-      "name": "Recipient Name",
-      "addr": "recipient@example.com"
-    },
-    "date": "2026-02-20 16:30+00:00",
-    "has_attachment": false
-  }
-]
+{
+  "envelopes": [
+    {
+      "id": "14273",
+      "message-id": "IMNQv7qwThe7f2_c1CUUbA@geopod-ismtpd-84",
+      "in-reply-to": [],
+      "flags": [
+        {
+          "iana": "seen",
+          "raw": "\\Seen"
+        }
+      ],
+      "subject": "Redis Email Notification",
+      "from": [
+        {
+          "name": "Redis",
+          "email": "noreply@redis.com"
+        }
+      ],
+      "to": [
+        {
+          "name": null,
+          "email": "user@example.com"
+        }
+      ],
+      "date": "2026-09-03T01:10:53Z",
+      "size": 8351,
+      "has-attachment": null
+    }
+  ]
+}
 ```
 
 ## Fields
 
-- `id` (string): Unique envelope identifier
-- `flags` (array): Email flags (Seen, Flagged, etc.)
+- `id` (string): Backend-specific message identifier
+- `message-id` (string | null): RFC 5322 `Message-ID:`
+- `in-reply-to` (string[]): RFC 5322 `In-Reply-To:` IDs
+- `flags` (array): Array of Flag objects (`{ iana: "seen"|"answered"|"flagged"|"draft"|null, raw: string }`)
 - `subject` (string): Email subject
-- `from` (object): Sender with name and address
-- `to` (object): Recipient with name and address
-- `date` (string): Date with timezone
-- `has_attachment` (boolean): Whether email has attachments
-
-## Usage
-
-```bash
-# List from default folder (INBOX)
-himalaya envelope list --output json --page-size 20
-
-# List from specific folder
-himalaya envelope list --output json --folder Sent --page-size 20
-
-# With pagination
-himalaya envelope list --output json --page 2 --page-size 20
-```
-
-## Notes
-
-- Use `RUST_LOG=off` to suppress log output
-- Returns array of envelopes, newest first by default
+- `from` (array): Array of Address objects (`{ name: string|null, email: string }`)
+- `to` (array): Array of Address objects (`{ name: string|null, email: string }`)
+- `date` (string | null): ISO 8601 date-time timestamp (e.g. `2026-09-03T01:10:53Z`)
+- `size` (integer): Raw message size in bytes
+- `has-attachment` (boolean | null): Attachment presence indicator
