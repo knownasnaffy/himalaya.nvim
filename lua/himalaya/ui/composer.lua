@@ -1,5 +1,6 @@
 local message_cli = require("himalaya.cli.message")
 local state = require("himalaya.state")
+local config = require("himalaya.config")
 
 local M = {}
 
@@ -54,11 +55,13 @@ function M.open(opts)
 	-- Close existing composer if open
 	M.close()
 
+	local border_style = config.get_border_style()
+
 	local to_popup = Popup({
 		enter = true,
 		focusable = true,
 		border = {
-			style = "rounded",
+			style = border_style,
 			text = {
 				top = " To ",
 				top_align = "left",
@@ -73,7 +76,7 @@ function M.open(opts)
 		enter = false,
 		focusable = true,
 		border = {
-			style = "rounded",
+			style = border_style,
 			text = {
 				top = " Cc ",
 				top_align = "left",
@@ -88,7 +91,7 @@ function M.open(opts)
 		enter = false,
 		focusable = true,
 		border = {
-			style = "rounded",
+			style = border_style,
 			text = {
 				top = " Subject ",
 				top_align = "left",
@@ -103,7 +106,7 @@ function M.open(opts)
 		enter = false,
 		focusable = true,
 		border = {
-			style = "rounded",
+			style = border_style,
 			text = {
 				top = " Body ",
 				top_align = "left",

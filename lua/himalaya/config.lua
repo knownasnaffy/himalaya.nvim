@@ -4,6 +4,7 @@ M.config = {
 	sidebar = {
 		width = 30,
 	},
+	border = "single", -- border style for nui popups: "single", "rounded", "double", etc.
 	split_ratio = 0.4, -- email list takes 40% when split
 	wrap_folder_navigation = true, -- wrap to first/last when navigating folders
 	icons_enabled = false, -- use nerd font icons for folders
@@ -54,6 +55,15 @@ M.config = {
 
 function M.setup(opts)
 	M.config = vim.tbl_deep_extend("force", M.config, opts or {})
+end
+
+function M.get_border_style()
+	if type(M.config.border) == "table" and M.config.border.style then
+		return M.config.border.style
+	elseif M.config.border then
+		return M.config.border
+	end
+	return "single"
 end
 
 return M

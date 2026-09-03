@@ -37,8 +37,10 @@ function NuiPopup.new(opts)
 		bufnr = bufnr,
 		winid = 1000,
 		border = {
+			style = opts.border and opts.border.style,
 			set_text = function() end,
 		},
+		_opts = opts,
 	}, NuiPopup)
 end
 

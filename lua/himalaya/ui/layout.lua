@@ -76,11 +76,13 @@ end
 function M.create()
 	state.reset_ui()
 
+	local border_style = config.get_border_style()
+
 	local sidebar = Popup({
 		enter = false,
 		focusable = false,
 		border = {
-			style = "rounded",
+			style = border_style,
 			text = {
 				top = " Folders ",
 				top_align = "center",
@@ -96,7 +98,7 @@ function M.create()
 		enter = true,
 		focusable = true,
 		border = {
-			style = "rounded",
+			style = border_style,
 			text = {
 				top = " Emails ",
 				top_align = "center",
@@ -112,7 +114,7 @@ function M.create()
 		enter = false,
 		focusable = true,
 		border = {
-			style = "rounded",
+			style = border_style,
 			text = {
 				top = " Email ",
 				top_align = "center",
