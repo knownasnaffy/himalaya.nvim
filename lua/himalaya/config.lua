@@ -10,6 +10,7 @@ M.config = {
 	custom_select = nil, -- optional custom picker function: fn(items, opts, on_choice)
 	keymaps = {
 		listing = {
+			["g?"] = "show_keymaps",
 			["gq"] = "close",
 			["]f"] = "next_folder",
 			["[f"] = "previous_folder",
@@ -35,6 +36,7 @@ M.config = {
 			["g/"] = "search",
 		},
 		email = {
+			["g?"] = "show_keymaps",
 			["gq"] = "close_email",
 			["q"] = "close_email",
 			["gr"] = "reply",

@@ -4,9 +4,14 @@ local config = require("himalaya.config")
 local keymap_util = require("himalaya.utils.keymap")
 local email_mod = require("himalaya.email")
 local actions_mod = require("himalaya.actions")
+local keymap_help = require("himalaya.ui.keymap_help")
 
 -- Define actions for email reading pane
 local actions = {
+	show_keymaps = function()
+		keymap_help.open("Himalaya email keymaps", config.config.keymaps.email)
+	end,
+
 	close_email = function()
 		email_mod.close()
 	end,
