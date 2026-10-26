@@ -94,6 +94,7 @@ Default keybindings (all customizable via `config.keymaps`):
 
 | Key | Action | Description |
 | --- | ------ | ----------- |
+| `g?` | `show_keymaps` | Show available keybindings |
 | `<CR>` | `open_email` | Open email in split pane below |
 | `gq` | `close` | Close Himalaya |
 | `]f` | `next_folder` | Next mailbox (supports count) |
@@ -118,6 +119,7 @@ Default keybindings (all customizable via `config.keymaps`):
 
 | Key | Action | Description |
 | --- | ------ | ----------- |
+| `g?` | `show_keymaps` | Show available keybindings |
 | `gq` / `q` | `close_email` | Close email pane |
 | `gr` / `r` | `reply` | Reply to email |
 | `gf` | `forward` | Forward email |
@@ -152,6 +154,7 @@ require("himalaya").setup({
   custom_select = nil, -- custom picker hook: function(items, opts, on_choice)
   keymaps = {
     listing = {
+      ["g?"] = "show_keymaps",
       ["gq"] = "close",
       ["]f"] = "next_folder",
       ["[f"] = "previous_folder",
@@ -177,6 +180,7 @@ require("himalaya").setup({
       ["g/"] = "search",
     },
     email = {
+      ["g?"] = "show_keymaps",
       ["gq"] = "close_email",
       ["q"] = "close_email",
       ["gr"] = "reply",
