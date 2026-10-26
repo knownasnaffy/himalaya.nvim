@@ -8,9 +8,14 @@ local email_mod = require("himalaya.email")
 local himalaya = require("himalaya")
 local actions_mod = require("himalaya.actions")
 local account_mod = require("himalaya.account")
+local keymap_help = require("himalaya.ui.keymap_help")
 
 -- Define actions
 local actions = {
+	show_keymaps = function()
+		keymap_help.open("Himalaya email listing keymaps", config.config.keymaps.listing)
+	end,
+
 	close = function()
 		himalaya.close()
 	end,

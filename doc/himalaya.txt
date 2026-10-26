@@ -55,6 +55,7 @@ message reading with automatic seen flags, and a multi-window floating composer.
 4. KEYBINDINGS                                           *himalaya-keybindings*
 
 Email Listing (himalaya-envelope-listing):
+    g?            Show available keybindings
     <CR>          Open email in reader split below
     gq            Close Himalaya
     ]f / [f       Next / previous mailbox (supports count)
@@ -73,6 +74,7 @@ Email Listing (himalaya-envelope-listing):
     g/            Search envelopes
 
 Email Reading (himalaya-email):
+    g?            Show available keybindings
     gq / q        Close email reader pane
     gr / r        Reply to email
     gf            Forward email
